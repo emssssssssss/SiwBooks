@@ -1,0 +1,61 @@
+.cover-img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.book-card {
+  display: block;
+  text-align: center;
+  text-decoration: none;
+  color: #222;
+  font-weight: bold;
+}
+
+.book-title {
+  margin-top: 8px;
+  font-size: 0.9em;
+}
+
+/* Navbar */
+nav {
+  background-color: rgba(48, 113, 93);
+  padding: 0.5rem 1rem;
+  z-index: 100;
+  font-family: Arial, sans-serif;
+}
+
+.navbar-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo img {
+  height: 50px;
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  gap: 5vw;
+  margin: 0;
+  padding: 0;
+}
+
+nav ul li {
+  display: inline;
+}
+
+nav a,
+nav button {
+  text-decoration: none;
+  color: black;
+  font-weight: bold;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
