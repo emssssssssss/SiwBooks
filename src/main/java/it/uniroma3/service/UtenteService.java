@@ -54,4 +54,8 @@ public class UtenteService {
         return Optional.empty();
     }
 
+    public boolean isAmministratore(String codice) {
+        return codice != null && codice.equals("Panino_con_pomodori");
+    }
+
 }

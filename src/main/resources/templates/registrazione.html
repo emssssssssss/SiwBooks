@@ -11,27 +11,37 @@
     <h1>MODULO DI REGISTRAZIONE</h1>
     <h2>Ora ci servono alcuni tuoi dati:</h2>
 
-    <form th:action="@{/registrazione}" method="post" class="form-registrazione">
+    <!-- nel controller viene passato "utente" come model attribute -->
+    <form th:action="@{/registrazione}" th:object="${utente}" method="post" class="form-registrazione">
 
-        <label for="nome">Nome utente:</label>
-        <input type="text" id="nome" name="nome" required class="input-stile"><br><br>
+        <label for="username">Nome utente:</label>
+        <input type="text" id="username" th:field="*{username}" required class="input-stile">
+        <div th:if="${#fields.hasErrors('username')}" style="color:red" th:errors="*{username}"></div>
+        <br><br>
 
         <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required class="input-stile"><br><br>
+        <input type="email" id="email" th:field="*{email}" required class="input-stile">
+        <div th:if="${#fields.hasErrors('email')}" style="color:red" th:errors="*{email}"></div>
+        <br><br>
 
         <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required class="input-stile"><br><br>
+        <input type="password" id="password" th:field="*{password}" required class="input-stile">
+        <div th:if="${#fields.hasErrors('password')}" style="color:red" th:errors="*{password}"></div>
+        <br><br>
 
         <label for="passwordBis">Conferma Password:</label>
-        <input type="password" id="passwordBis" name="passwordBis" required class="input-stile"><br><br>
+        <input type="password" id="passwordBis" name="passwordBis" required class="input-stile">
+        <!-- passwordBis non è parte di utente, perciò si gestisce con messaggi custom -->
+        <br><br>
 
         <label for="codiceAmministratore">Codice Amministratore (se non lo hai puoi lasciare in bianco):</label>
-        <input type="text" id="codiceAmministratore" name="codiceAmministratore" class="input-stile"><br><br>
+        <input type="text" id="codiceAmministratore" name="codiceAmministratore" class="input-stile">
+        <br><br>
 
         <button type="submit" class="btn-invio">Registrati</button>
     </form>
 
-    <!-- Messaggi di errore -->
+    <!-- Messaggi generali di errore -->
     <div th:if="${errore}" style="color:red;">
         <p th:text="${errore}"></p>
     </div>

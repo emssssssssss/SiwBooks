@@ -21,15 +21,10 @@
   <!-- Include la navbar -->
   <div th:replace="fragments/navbar :: navbar"></div>
 
-  <!-- Scritta centrale -->
-  <div class="center-text">
-    <h1>Bookly</h1>
-  </div>
-
-  <!-- Carosello Fantasy -->
+  <!-- Primo blocco di caroselli -->
   <section class="carousel-section">
     <h2>Fantasy</h2>
-    <div class="swiper">
+    <div class="swiper swiper-fantasy">
       <div class="swiper-wrapper">
         <div class="swiper-slide" th:each="libro : ${fantasy}">
           <a th:href="@{'/libri/' + ${libro.id}}" class="book-card">
@@ -43,12 +38,49 @@
     </div>
   </section>
 
-  <!-- Carosello Thriller -->
   <section class="carousel-section">
     <h2>Thriller</h2>
-    <div class="swiper">
+    <div class="swiper swiper-thriller">
       <div class="swiper-wrapper">
         <div class="swiper-slide" th:each="libro : ${thriller}">
+          <a th:href="@{'/libri/' + ${libro.id}}" class="book-card">
+            <img th:src="${libro.urlCopertina}" alt="Copertina" class="cover-img" />
+            <div class="book-title" th:text="${libro.titolo}"></div>
+          </a>
+        </div>
+      </div>
+      <div class="swiper-button-prev"></div>
+      <div class="swiper-button-next"></div>
+    </div>
+  </section>
+
+  <!-- Scritta centrale -->
+  <div class="center-text">
+    <h1>Bookly</h1>
+  </div>
+
+  <!-- Secondo blocco di caroselli -->
+  <section class="carousel-section">
+    <h2>Romance</h2>
+    <div class="swiper swiper-romance">
+      <div class="swiper-wrapper">
+        <div class="swiper-slide" th:each="libro : ${romance}">
+          <a th:href="@{'/libri/' + ${libro.id}}" class="book-card">
+            <img th:src="${libro.urlCopertina}" alt="Copertina" class="cover-img" />
+            <div class="book-title" th:text="${libro.titolo}"></div>
+          </a>
+        </div>
+      </div>
+      <div class="swiper-button-prev"></div>
+      <div class="swiper-button-next"></div>
+    </div>
+  </section>
+
+  <section class="carousel-section">
+    <h2>Horror</h2>
+    <div class="swiper swiper-horror">
+      <div class="swiper-wrapper">
+        <div class="swiper-slide" th:each="libro : ${horror}">
           <a th:href="@{'/libri/' + ${libro.id}}" class="book-card">
             <img th:src="${libro.urlCopertina}" alt="Copertina" class="cover-img" />
             <div class="book-title" th:text="${libro.titolo}"></div>

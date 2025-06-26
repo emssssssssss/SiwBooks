@@ -20,9 +20,13 @@ public class HomeController {
     public String homepage(Model model) {
         List<Libro> fantasy = libroService.findByGenere("Fantasy");
         List<Libro> thriller = libroService.findByGenere("Thriller");
+        List<Libro> romance = libroService.findByGenere("Romance");
+        List<Libro> horror = libroService.findByGenere("Horror");
 
         model.addAttribute("fantasy", fantasy);
         model.addAttribute("thriller", thriller);
+        model.addAttribute("romance", romance);
+        model.addAttribute("horror", horror);
         return "home";
     }
 }
