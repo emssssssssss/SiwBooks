@@ -2,13 +2,16 @@ package it.uniroma3.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 
 @Entity
 public class Recensione {
-    @Id @GeneratedValue
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String titolo;
@@ -16,16 +19,26 @@ public class Recensione {
     private int voto; // 1-5
    
 
-    @Lob
+    @Lob  //Large Object, annotazione per mappare campi che possono contenere grandi quantità di dati
     private String testo;
 
     @ManyToOne
     private Libro libro;
 
+
     @ManyToOne
     private Utente autore;
 
+
     
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public String getTitolo() {
         return titolo;
     }
@@ -40,6 +53,22 @@ public class Recensione {
 
     public void setVoto(int voto) {
         this.voto = voto;
+    }
+    
+    public Libro getLibro() {
+        return libro;
+    }
+
+    public void setLibro(Libro libro) {
+        this.libro = libro;
+    }
+        
+    public Utente getAutore() {
+        return autore;
+    }
+
+    public void setAutore(Utente autore) {
+        this.autore = autore;
     }
 
 }

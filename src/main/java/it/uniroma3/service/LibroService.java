@@ -28,4 +28,13 @@ public class LibroService {
     public void deleteById(Long id) {
         libroRepository.deleteById(id);
     }
+
+    public List<Libro> findUltimiLibri() {
+        return libroRepository.findTop6ByOrderByAnnoPubblicazioneDesc();
+    }
+
+    public List<Libro> findByGenere(String genere) {
+        return libroRepository.findByGenere(genere);
+    }
+
 }

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="stylesheet" th:href="@{/css/autore.css}" />
+  <title th:text="${autore.nome}">Nome autore</title>
+</head>
+
+<body>
+
+  <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+  <div class="autore-container">
+    <h1 th:text="${autore.nome}">Nome autore</h1>
+
+    <div class="img-container">
+      <img th:src="${autore.urlImage}" alt="Immagine autore" />
+    </div>
+
+    <p><strong>Biografia:</strong></p>
+    <p th:text="${autore.biografia}">Biografia autore...</p>
+
+    <p>
+      <strong>Anno di nascita:</strong>
+      <span th:text="${autore.annoNascita}">Anno nascita</span>
+    </p>
+
+    <p th:if="${autore.annoMorte != null}">
+      <strong>Anno di morte:</strong>
+      <span th:text="${autore.annoMorte}">Anno morte</span>
+    </p>
+
+    
+    <div th:if="${autore.libri != null and !autore.libri.empty}">
+      <h3>Libri dell'autore:</h3>
+      <ul>
+        <li th:each="libro : ${autore.libri}">
+          <a th:href="@{/libro/{id}(id=${libro.id})}" th:text="${libro.titolo}">Titolo libro</a>
+        </li>
+      </ul>
+    </div>
+
+    <div sec:authorize="hasRole('STAFF')" class="action-buttons">
+        <a th:href="@{'/autore/modifica/' + ${autore.id}}">
+            <button class="btn-modifica">Modifica</button>
+        </a>
+        <a th:href="@{'/autore/aggiungi-libro/' + ${autore.id}}">
+            <button class="btn-aggiungi-libro">Aggiungi Libro</button>
+        <form th:action="@{'/autore/elimina/' + ${autore.id}}" method="post" style="display:inline;">
+            <button class="btn-elimina" type="submit" onclick="return confirm('Sei sicuro di voler eliminare questo autore?')">Elimina</button>
+        </form>
+    </div>
+
+
+  </div>
+
+</body>
+
+</html>

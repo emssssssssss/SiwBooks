@@ -24,6 +24,12 @@ public class Libro {
     @NotBlank(message = "Il titolo non può essere nullo")
     private String titolo;
 
+    @NotBlank(message = "La descrizione non può essere nulla")
+    private String descrizione;
+
+    @NotBlank(message = "Il genere non può essere nullo")
+    private String genere;
+
     @NotNull(message = "L'anno è obbligatorio")
     private int annoPubblicazione;
 
@@ -62,6 +68,46 @@ public class Libro {
     public void setAnnoPubblicazione(int annoPubblicazione) {
         this.annoPubblicazione = annoPubblicazione;
     }
+    
+    public List<Autore> getAutori() {
+        return autori;
+    }
+
+    public void setAutori(List<Autore> autori) {
+        this.autori = autori;
+    }
+    
+    public List<Recensione> getRecensioni() {
+        return recensioni;
+    }
+
+    public void setRecensioni(List<Recensione> recensioni) {
+        this.recensioni = recensioni;
+    }
+
+
+    public String getDescrizione() {
+        return descrizione;
+    }
+
+    public void setDescrizione(String descrizione) {
+        this.descrizione = descrizione;
+    }
+
+
+    public String getGenere() {
+        return genere;
+    }
+
+    public void setGenere(String genere) {
+        this.genere = genere;
+    }
+
+
+    public String getUrlCopertina() {
+        return (this.immagini != null && !this.immagini.isEmpty()) ? this.immagini.get(0) : "/images/default-cover.jpg";
+    }
+
 
 
 }

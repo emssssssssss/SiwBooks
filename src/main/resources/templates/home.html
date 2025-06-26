@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="it"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Home - Bookly</title>
+  <link rel="stylesheet" href="/css/home.css" />
+
+  <!-- Swiper CSS -->
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
+  />
+</head>
+
+<body>
+
+  <!-- Include la navbar -->
+  <div th:replace="fragments/navbar :: navbar"></div>
+
+  <!-- Scritta centrale -->
+  <div class="center-text">
+    <h1>Bookly</h1>
+  </div>
+
+  <!-- Carosello Fantasy -->
+  <section class="carousel-section">
+    <h2>Fantasy</h2>
+    <div class="swiper">
+      <div class="swiper-wrapper">
+        <div class="swiper-slide" th:each="libro : ${fantasy}">
+          <a th:href="@{'/libri/' + ${libro.id}}" class="book-card">
+            <img th:src="${libro.urlCopertina}" alt="Copertina" class="cover-img" />
+            <div class="book-title" th:text="${libro.titolo}"></div>
+          </a>
+        </div>
+      </div>
+      <div class="swiper-button-prev"></div>
+      <div class="swiper-button-next"></div>
+    </div>
+  </section>
+
+  <!-- Carosello Thriller -->
+  <section class="carousel-section">
+    <h2>Thriller</h2>
+    <div class="swiper">
+      <div class="swiper-wrapper">
+        <div class="swiper-slide" th:each="libro : ${thriller}">
+          <a th:href="@{'/libri/' + ${libro.id}}" class="book-card">
+            <img th:src="${libro.urlCopertina}" alt="Copertina" class="cover-img" />
+            <div class="book-title" th:text="${libro.titolo}"></div>
+          </a>
+        </div>
+      </div>
+      <div class="swiper-button-prev"></div>
+      <div class="swiper-button-next"></div>
+    </div>
+  </section>
+
+  <!-- Swiper JS -->
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  <!-- JS personalizzato -->
+  <script src="/js/caroselloHome.js"></script>
+
+</body>
+</html>
