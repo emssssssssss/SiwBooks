@@ -27,7 +27,7 @@ public class AuthConfiguration {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/", "/login", "/register", "/css/**", "/home", "/images/**", "/error").permitAll()
+                .requestMatchers("/", "/login", "/registrazione", "/css/**", "/home", "/images/**", "/error").permitAll()
                 
                                 // Solo ADMIN può accedere a /admin/**
                 .requestMatchers("/admin/**").hasRole("ADMIN")
@@ -39,6 +39,7 @@ public class AuthConfiguration {
             )
             .formLogin(form -> form
                 .loginPage("/login")
+                .failureUrl("/login?error=true")
                 .defaultSuccessUrl("/", true)
                 .permitAll()
             )

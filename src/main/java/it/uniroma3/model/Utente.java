@@ -16,6 +16,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Transient;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 
 @Entity
@@ -24,13 +27,18 @@ public class Utente implements UserDetails{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Username obbligatorio")
+    @Size(min = 3, max = 20, message = "Username deve avere tra 3 e 20 caratteri")
     private String username;
 
+    @NotBlank(message = "Password obbligatoria")
+    @Size(min = 6, message = "La password deve avere almeno 6 caratteri")
     private String password;
 
     @Transient // non è una colonna nel database
 	private String passwordBis;
 
+    @Email(message = "Email non valida")
     @Column(unique = true)
     private String email;
     

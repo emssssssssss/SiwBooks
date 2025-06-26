@@ -59,3 +59,10 @@ nav button {
   font-size: 1rem;
 }
 
+.center-text {
+  text-align: center;
+  font-size: 3rem;
+  font-weight: bold;
+  margin: 3rem 0;
+  font-family: 'Georgia', serif;
+}
