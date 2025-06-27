@@ -24,8 +24,6 @@ public class UtenteService {
 
         // Salvataggio utente
     public Utente addUtente(Utente utente) {
-        // Codifica della password prima del salvataggio
-        utente.setPassword(passwordEncoder.encode(utente.getPassword()));
         return utenteRepository.save(utente);
     }
 

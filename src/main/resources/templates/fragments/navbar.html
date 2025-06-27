@@ -20,7 +20,7 @@
 
       <li sec:authorize="isAnonymous()">
         <!-- Assumendo che currentUri sia valorizzato nel model con l'URI corrente -->
-        <a th:href="@{/login(redirect=${currentUri})}">Login</a>
+        <a th:href="@{/login}">Login</a>
       </li>
 
       <li sec:authorize="isAuthenticated()">
