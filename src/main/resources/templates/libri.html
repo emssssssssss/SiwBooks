@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="it" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" th:href="@{/css/libri.css}" />
+    <title>Libri disponibili</title>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <div class="main-content">
+    <!-- Titolo -->
+    <h1>LIBRI DISPONIBILI</h1>
+
+    <div class="container1">
+        <ul>
+            <li th:each="libro : ${libri}">
+                <!-- Immagine di copertina -->
+                <div>
+                    <a th:href="@{/libri/{id}(id=${libro.id})}">
+                        <img th:src="${#lists.isEmpty(libro.immagini) ? '/images/default-cover.jpg' : libro.immagini[0]}" 
+                             alt="Copertina libro" />
+                    </a>
+                </div>
+
+                <!-- Titolo libro -->
+                <a th:href="@{/libri/{id}(id=${libro.id})}" th:text="${libro.titolo}">Titolo</a>
+            </li>
+        </ul>
+
+        <!-- Pulsante visibile solo all'admin -->
+        <div class="aggiungi-libro-container" sec:authorize="hasRole('ADMIN')">
+            <a th:href="@{/libri/admin/nuovo}">
+                <button class="btn-aggiungi-libro">Aggiungi Nuovo Libro</button>
+            </a>
+        </div>
+
+        <!-- Messaggio se lista vuota -->
+        <div th:if="${libri == null or #lists.isEmpty(libri)}">Non ci sono libri nel sistema</div>
+    </div>
+    </div>
+</body>
+</html>

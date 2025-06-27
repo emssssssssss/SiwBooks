@@ -1,0 +1,122 @@
+/* Navbar */
+nav {
+  background-color: rgba(48, 113, 93);
+  padding: 0.5rem 1rem;
+  z-index: 100;
+  font-family: Arial, sans-serif;
+}
+
+.navbar-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo img {
+  height: 50px;
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  gap: 5vw;
+  margin: 0;
+  padding: 0;
+}
+
+nav ul li {
+  display: inline;
+}
+
+nav a,
+nav button {
+  text-decoration: none;
+  color: black;
+  font-weight: bold;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.main-content {
+    background-color: #dde6d4; 
+    min-height: 100vh;
+    padding: 2rem;
+}
+
+/* Body base */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f2f2f2;
+}
+
+/* Titolo */
+h1 {
+  text-align: center;
+  padding-top: 1rem;
+color: #001617;
+}
+
+/* Container griglia libri */
+.container1 ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2vw;
+    padding: 0;
+    list-style: none;
+    justify-content: flex-start;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.container1 ul li {
+    flex: 0 0 calc((100%) / 6); /* 6 per riga */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+.container1 ul li img {
+    width: 9.5vw;
+    height: 31.7vh;
+    border-radius: 8px;
+    object-fit: cover;
+    margin-bottom: 8px;
+    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Titolo del libro */
+.container1 a {
+    color: #001617;
+    text-decoration: none;
+    font-weight: 600;
+    text-align: center;
+}
+
+.container1 ul li a:hover {
+    text-decoration: underline;
+}
+
+/* Pulsante aggiunta libro */
+.aggiungi-libro-container {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.btn-aggiungi-libro {
+    font-size: 1.2em;
+    padding: 12px 24px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.btn-aggiungi-libro:hover {
+    background-color: #1e7e34;
+}

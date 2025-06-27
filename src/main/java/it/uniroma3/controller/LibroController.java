@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -13,26 +14,31 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import it.uniroma3.model.Libro;
 import it.uniroma3.model.Recensione;
+import it.uniroma3.service.AutoreService;
 import it.uniroma3.service.LibroService;
 import it.uniroma3.service.UtenteService;
 ;
 
+@Controller
 public class LibroController {
-        @Autowired
+    @Autowired
     private LibroService libroService;
 
     @Autowired
     private UtenteService utenteService;
 
+    @Autowired
+    private AutoreService autoreService;
+
     // Mostra elenco libri
-    @GetMapping
+    @GetMapping("/libri")
     public String elencoLibri(Model model) {
         model.addAttribute("libri", libroService.findAll());
-        return "libri/elenco";
+        return "libri";
     }
 
     // Mostra dettagli di un libro, incluse le recensioni
-    @GetMapping("/{id}")
+    @GetMapping("/libro/{id}")
     public String dettagliLibro(@PathVariable Long id,
                                 Model model,
                                 @AuthenticationPrincipal UserDetails userDetails) {
@@ -57,14 +63,15 @@ public class LibroController {
             }
         }
 
-        return "libri/dettagli";
+        return "libro";
     }
 
     // Aggiunta (solo admin) — opzionale
     @GetMapping("/admin/nuovo")
     public String mostraFormLibro(Model model) {
         model.addAttribute("libro", new Libro());
-        return "libri/form";
+        model.addAttribute("autori", autoreService.findAll());
+        return "formLibro";
     }
 
     @PostMapping("/admin")

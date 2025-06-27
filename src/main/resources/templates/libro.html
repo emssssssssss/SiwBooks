@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="it" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" th:href="@{/css/libri.css}" />
+    <title>Elenco Libri</title>
+</head>
+<body>
+
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <div class="main-content">
+    <h1>Libri disponibili</h1>
+
+    <div class="container1">
+        <ul>
+            <li th:each="libro : ${libri}">
+                <!-- Copertina: prima immagine o default -->
+                <div>
+                    <a th:href="@{/libri/{id}(id=${libro.id})}">
+                        <img th:src="${#lists.isEmpty(libro.immagini) ? '/images/default-cover.jpg' : libro.immagini[0]}" 
+                             alt="Copertina libro" class="thumb" />
+                    </a>
+                </div>
+
+                <!-- Titolo -->
+                <a th:href="@{/libri/{id}(id=${libro.id})}" th:text="${libro.titolo}">Titolo Libro</a>
+
+                <!-- Autori multipli -->
+                <p>
+                  <strong>Autori:</strong>
+                  <span th:each="a, iterStat : ${libro.autori}">
+                    <span th:text="${a.nome} + ' ' + ${a.cognome}">Nome Autore</span>
+                    <span th:if="${!iterStat.last}">, </span>
+                  </span>
+                </p>
+
+                <!-- Anteprima immagini secondarie (fino a 3) -->
+                <div class="anteprima-immagini" th:if="${libro.immagini.size() > 1}">
+                  <img th:each="imgUrl, idxStat : ${libro.immagini}" 
+                       th:if="${idxStat.index > 0 and idxStat.index < 4}"
+                       th:src="${imgUrl}" alt="Immagine libro" class="mini-thumb" />
+                </div>
+            </li>
+        </ul>
+
+        <!-- Pulsante Aggiungi Libro visibile solo all'admin -->
+        <div class="aggiungi-libro-container" sec:authorize="hasRole('ADMIN')">
+            <a th:href="@{/libri/admin/nuovo}">
+                <button class="btn-aggiungi-libro">Aggiungi Nuovo Libro</button>
+            </a>
+        </div>
+
+        <div th:if="${libri == null or #lists.isEmpty(libri)}">Non ci sono libri nel sistema</div>
+    </div>
+    </div>
+
+</body>
+</html>

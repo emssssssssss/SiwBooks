@@ -1,18 +1,3 @@
-INSERT INTO libro (id, titolo, descrizione, genere, anno_pubblicazione)
-VALUES 
-  (1, 'Il Signore degli Anelli', 'Un epico viaggio nella Terra di Mezzo.', 'Fantasy', 1954),
-  (2, 'Harry Potter e la Pietra Filosofale', 'Il primo anno alla Scuola di Magia e Stregoneria di Hogwarts.', 'Fantasy', 1997),
-  (3, 'Il codice da Vinci', 'Un thriller ricco di misteri e simboli nascosti.', 'Thriller', 2003),
-  (4, 'Sherlock Holmes: Uno studio in rosso', 'La prima indagine del celebre investigatore.', 'Thriller', 1887);
-
--- Immagini (mappa immagini alle righe della tabella "libro_immagini")
-INSERT INTO libro_immagini (libro_id, immagini)
-VALUES 
-  (1, '/imges/lotr.jpg'),
-  (2, '/imges/hp.jpg'),
-  (3, '/img/daVinci.jpg'),
-  (4, '/img/holmes.jpg');
-
 
 INSERT INTO utente (email, username, password, ruolo)
 VALUES (
@@ -21,3 +6,90 @@ VALUES (
   '$2a$10$dKcrLuW.qaTAKuI.5F/k..2UfPjQ/.VGaxL4qHKKJNj/GJv3EKgUW', -- "admin123"
   'ADMIN'
 );
+
+
+
+
+-- 7 libri Fantasy (ID 1-7)
+INSERT INTO libro (id, titolo, descrizione, genere, anno_pubblicazione) VALUES
+  (1,  'Lo Hobbit',                              'Il piccolo e improbabile eroe Bilbo Baggins in un’avventura straordinaria.',                     'Fantasy', 1937),
+  (2,  'A Game of Thrones',                      'Intrighi e lotte per il Trono di Spade in un continente diviso.',                                  'Fantasy', 1996),
+  (3,  'Le Cronache di Narnia: Il Leone...',     'I fratelli Pevensie scoprono un mondo magico oltre l’armadio.',                                   'Fantasy', 1950),
+  (4,  'Il Nome del Vento',                      'La storia di Kvothe, mago e menestrello, narrata in prima persona.',                              'Fantasy', 2007),
+  (5, 'Il Signore degli Anelli',                 'Un epico viaggio nella Terra di Mezzo.', 'Fantasy', 1954),
+  (6,  'Mistborn: L’Ultimo Impero',              'La magia del metallo e la rivolta contro un dio tiranno.',                                       'Fantasy', 2006),
+  (7,  'La Ruota del Tempo: L''Occhio...',      'La missione di Rand al’Ultimo Villaggio per salvare il mondo dal male.',                         'Fantasy', 1990);
+
+-- Copertine Fantasy
+INSERT INTO libro_immagini (libro_id, immagini) VALUES
+  (1,  '/images/hobbit.jpg'),
+  (2,  '/images/got.jpg'),
+  (3,  '/images/narnia.jpg'),
+  (4,  '/images/nameofwind.jpg'),
+  (5,  '/images/lotr.jpg'),
+  (6,  '/images/mistborn.jpg'),
+  (7,  '/images/wheeloftime.jpg');
+
+-- 7 libri Thriller (ID 8-14)
+INSERT INTO libro (id, titolo, descrizione, genere, anno_pubblicazione) VALUES
+(8, 'Il Codice Da Vinci', 'Un thriller ricco di misteri e simboli nascosti.', 'Thriller', 2003),
+(9, 'Angeli e Demoni', 'Robert Langdon contro gli Illuminati in Vaticano.', 'Thriller', 2000),
+(10, 'Inferno', 'Langdon si risveglia a Firenze senza memoria e in fuga.', 'Thriller', 2013),
+(11, 'Il Simbolo Perduto', 'Una missione per salvare Washington dai segreti massonici.', 'Thriller', 2009),
+(12, 'Origine', 'Un’innovazione scientifica che potrebbe cambiare la religione.', 'Thriller', 2017),
+(13, 'Gone Girl', 'Un matrimonio perfetto nasconde bugie letali.', 'Thriller', 2012),
+(14, 'Dark Places', 'Una donna cerca la verità su un massacro in famiglia.', 'Thriller', 2009);
+
+
+-- Immagini Thriller
+INSERT INTO libro_immagini (libro_id, immagini) VALUES
+(8, '/images/daVinci.jpg'),
+(9, '/images/angelsdemons.jpg'),
+(10, '/images/inferno.jpg'),
+(11, '/images/simboloperduto.jpg'),
+(12, '/images/origine.jpg'),
+(13, '/images/gonegirl.jpg'),
+(14, '/images/darkplaces.jpg');
+
+-- Libri Horror (ID 8–14)
+INSERT INTO libro (id, titolo, descrizione, genere, anno_pubblicazione) VALUES
+(15, 'It', 'Una forza malvagia prende la forma di un clown e terrorizza i bambini.', 'Horror', 1986),
+(16, 'Shining', 'Un hotel isolato spinge un padre alla follia.', 'Horror', 1977),
+(17, 'Pet Sematary', 'Un cimitero segreto restituisce la vita... ma non senza conseguenze.', 'Horror', 1983),
+(18, 'Misery', 'Uno scrittore è prigioniero della sua fan più ossessiva.', 'Horror', 1987),
+(19, 'Carrie', 'Una ragazza con poteri telecinetici si vendica dei suoi aguzzini.', 'Horror', 1974),
+(20, 'Doctor Sleep', 'Il seguito di Shining, Danny Torrance contro entità oscure.', 'Horror', 2013),
+(21, 'Frankenstein', 'Uno scienziato dà vita a una creatura con effetti devastanti.', 'Horror', 1818);
+
+-- Immagini Horror
+INSERT INTO libro_immagini (libro_id, immagini) VALUES
+(15, '/images/it.jpg'),
+(16, '/images/shining.jpg'),
+(17, '/images/petsematary.jpg'),
+(18, '/images/misery.jpg'),
+(19, '/images/carrie.jpg'),
+(20, '/images/doctorsleep.jpg'),
+(21, '/images/frankenstein.jpg');
+
+
+-- Libri Romance (ID 15–21)
+INSERT INTO libro (id, titolo, descrizione, genere, anno_pubblicazione) VALUES
+(22, 'Orgoglio e Pregiudizio', 'Elizabeth Bennet e Mr. Darcy si sfidano a colpi di intelletto e sentimento.', 'Romance', 1813),
+(23, 'Ragione e Sentimento', 'Due sorelle affrontano amori e inganni in epoca georgiana.', 'Romance', 1811),
+(24, 'Emma', 'Una giovane donna si diletta nel fare da cupido con esiti comici.', 'Romance', 1815),
+(25, 'Le pagine della nostra vita', 'Un amore che supera tempo e memoria.', 'Romance', 1996),
+(26, 'Come un uragano', 'Una storia intensa tra due anime alla deriva.', 'Romance', 1998),
+(27, 'I passi dell’amore', 'Un amore giovane e tragico che cambia una vita.', 'Romance', 1999),
+(28, 'Il meglio di me', 'Due ex amanti si rincontrano anni dopo per affrontare il passato.', 'Romance', 2011);
+
+
+
+-- Immagini Romance
+INSERT INTO libro_immagini (libro_id, immagini) VALUES
+(22, '/images/pride.jpg'),
+(23, '/images/sense.jpg'),
+(24, '/images/emma.jpg'),
+(25, '/images/notebook.jpg'),
+(26, '/images/hurricane.jpg'),
+(27, '/images/walk.jpg'),
+(28, '/images/bestofme.jpg');

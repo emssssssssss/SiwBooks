@@ -36,7 +36,7 @@ public class Libro {
     @ElementCollection
     private List<String> immagini;
 
-    @ManyToMany
+    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     private List<Autore> autori;
 
     @OneToMany(mappedBy = "libro", cascade = CascadeType.ALL)
@@ -108,6 +108,12 @@ public class Libro {
         return (this.immagini != null && !this.immagini.isEmpty()) ? this.immagini.get(0) : "/images/default-cover.jpg";
     }
 
+    public List<String> getImmagini() {
+    return immagini;
+    }
 
+    public void setImmagini(List<String> immagini) {
+        this.immagini = immagini;
+    }
 
 }
