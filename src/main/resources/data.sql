@@ -18,6 +18,6 @@ INSERT INTO utente (email, username, password, ruolo)
 VALUES (
   'admin@email.com',
   'admin',
-  '$2a$10$zkVCkO.ZxevVP9x/fzF0O.7jUn2M1wbxEOkbc/r9XzvRkNG6xA9xi', -- "admin123"
+  '$2a$10$dKcrLuW.qaTAKuI.5F/k..2UfPjQ/.VGaxL4qHKKJNj/GJv3EKgUW', -- "admin123"
   'ADMIN'
 );

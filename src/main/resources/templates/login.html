@@ -12,11 +12,14 @@
         <h2>Accedi al tuo profilo</h2>
 
         <form th:action="@{/login}" method="post" class="form-accedi">
-            <label for="username">Email o Nome:</label>
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+
+            <label for="username">Nome:</label>
             <input type="text" id="username" name="username" required class="input-stile"><br><br>
 
             <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required class="input-stile"><br><br>
+            <input type="password" id="password" name="password" required class="input-stile" oninput="console.log(this.value)"><br><br>
 
             <button type="submit" class="btn-invio">Accedi</button>
             <hr>
@@ -34,6 +37,7 @@
     <div th:if="${errore}" style="color:red;">
         <p th:text="${errore}"></p>
     </div>
+
 </body>
 
 </html>

@@ -1,27 +1,51 @@
 package it.uniroma3.authentication;
 
 import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+//import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+//import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+//import org.springframework.security.core.userdetails.UserDetailsService;
+//import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+
+
 import org.springframework.security.web.SecurityFilterChain;
 
-import it.uniroma3.repository.UtenteRepository;
+import it.uniroma3.service.CustomUserDetailsService;
+
+//import it.uniroma3.repository.UtenteRepository;
 
 
 @Configuration
 @EnableWebSecurity
 public class AuthConfiguration {
-    
+
 
     @Autowired
-    private UtenteRepository utenteRepository;
+    private CustomAuthenticationSuccessHandler successHandler;
+
+    @Autowired
+    private CustomUserDetailsService userDetailsService;
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public DaoAuthenticationProvider authenticationProvider() {
+        // usa il costruttore non deprecato che riceve il UserDetailsService
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userDetailsService);
+        provider.setPasswordEncoder(passwordEncoder());
+        return provider;
+    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -33,32 +57,28 @@ public class AuthConfiguration {
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 
                 // Solo USER o ADMIN possono accedere a /user/**
-                .requestMatchers("/user/**").hasAnyRole("USER", "ADMIN")
+                //.requestMatchers("/user/**").hasAnyRole("USER", "ADMIN")
 
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
                 .loginPage("/login")
-                .failureUrl("/login?error=true")
+                .usernameParameter("username")
+                .passwordParameter("password")
+                .successHandler(successHandler)
+                .failureUrl("/loginError")
                 .defaultSuccessUrl("/", true)
                 .permitAll()
             )
             .logout(logout -> logout
-                .logoutSuccessUrl("/login?logout")
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/home")
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID")
                 .permitAll()
             );
 
         return http.build();
     }
 
-    @Bean
-    public UserDetailsService userDetailsService() {
-        return username -> utenteRepository.findByUsername(username)
-            .orElseThrow(() -> new UsernameNotFoundException("Utente non trovato"));
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
 }
