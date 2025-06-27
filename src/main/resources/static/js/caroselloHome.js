@@ -2,38 +2,38 @@ document.addEventListener('DOMContentLoaded', () => {
   const options = {
     slidesPerView: 4,
     spaceBetween: 20,
-    loop: false,
+    loop: true,
   };
 
   new Swiper('.swiper-fantasy', {
     ...options,
     navigation: {
-      nextEl: '.swiper-fantasy .swiper-button-next',
-      prevEl: '.swiper-fantasy .swiper-button-prev',
+      nextEl: '.swiper-fantasy-next',
+      prevEl: '.swiper-fantasy-prev',
     },
   });
 
   new Swiper('.swiper-thriller', {
     ...options,
     navigation: {
-      nextEl: '.swiper-thriller .swiper-button-next',
-      prevEl: '.swiper-thriller .swiper-button-prev',
+      nextEl: '.swiper-thriller-next',
+      prevEl: '.swiper-thriller-prev',
     },
   });
 
   new Swiper('.swiper-romance', {
     ...options,
     navigation: {
-      nextEl: '.swiper-romance .swiper-button-next',
-      prevEl: '.swiper-romance .swiper-button-prev',
+      nextEl: '.swiper-romance-next',
+      prevEl: '.swiper-romance-prev',
     },
   });
 
   new Swiper('.swiper-horror', {
     ...options,
     navigation: {
-      nextEl: '.swiper-horror .swiper-button-next',
-      prevEl: '.swiper-horror .swiper-button-prev',
+      nextEl: '.swiper-horror-next',
+      prevEl: '.swiper-horror-prev',
     },
   });
 });

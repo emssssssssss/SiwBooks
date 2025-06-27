@@ -1,17 +1,21 @@
 .cover-img {
   width: 100%;
-  height: 180px;
+  height: 400px;    
   object-fit: cover;
   border-radius: 10px;
 }
 
+
+/* Card libro centrata e margini */
 .book-card {
   display: block;
   text-align: center;
   text-decoration: none;
   color: #222;
   font-weight: bold;
+  margin: 0 auto;
 }
+
 
 .book-title {
   margin-top: 8px;
@@ -59,10 +63,58 @@ nav button {
   font-size: 1rem;
 }
 
-.center-text {
-  text-align: center;
-  font-size: 3rem;
-  font-weight: bold;
-  margin: 3rem 0;
-  font-family: 'Georgia', serif;
+.main-content {
+    background-color: #dde6d4; 
+    min-height: 100vh;
+    padding: 2rem;
+}
+
+/* Carosello */
+/* Contenitore swiper con padding a sx e dx */
+.swiper {
+  padding: 20px 80px; /* 40px spazio a sinistra e destra */
+  position: relative; /* per posizionare frecce assolute */
+}
+
+.swiper-slide {
+  flex: 0 0 calc((100% - 80px) / 5);
+  max-width: calc((100% - 80px) / 5);
+  margin-right: 20px;
+}
+
+.swiper-wrapper {
+  display: flex;
+  align-items: start;
+}
+
+.carousel-section {
+  margin-bottom: 40px;
+  padding: 0 60px;
+}
+
+.swiper-button-next,
+.swiper-button-prev {
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px; /* larghezza della freccia */
+  height: 40px; /* altezza della freccia */
+  z-index: 10;
+  color: #306f5d; /* Colore della freccia */
+  background: none;
+}
+
+/* Freccia sinistra fuori dal carosello */
+.swiper-button-prev {
+  left: 0px; 
+  position: absolute;
+}
+
+.swiper-button-next {
+  right: 0px;
+  position: absolute;
+}
+
+.swiper-button-prev::after,
+.swiper-button-next::after {
+  font-size: 24px; /* ingrandisce la freccia */
 }

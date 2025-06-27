@@ -51,7 +51,7 @@ public class AuthConfiguration {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/", "/login", "/registrazione", "/css/**", "/home", "/images/**", "/error").permitAll()
+                .requestMatchers("/", "/login", "/registrazione", "/css/**", "/home", "/images/**", "/error", "/libri", "/libro", "/libro/**").permitAll()
                 
                                 // Solo ADMIN può accedere a /admin/**
                 .requestMatchers("/admin/**").hasRole("ADMIN")

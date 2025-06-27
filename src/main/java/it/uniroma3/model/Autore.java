@@ -1,9 +1,12 @@
 package it.uniroma3.model;
 
+import java.util.List;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -37,6 +40,9 @@ public class Autore {
 	@Size(max = 2048, message = "L'URL dell'immagine è troppo lungo")
 	@Pattern(regexp = "^(http|https)://.*\\.(jpg|jpeg|png|gif)$", message = "L'URL deve essere valido e puntare a un'immagine (jpg, jpeg, png, gif)")
     private String fotoUrl;
+
+    @ManyToMany(mappedBy = "autori")
+    private List<Libro> libri;
 
 
     
