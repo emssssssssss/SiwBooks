@@ -28,14 +28,14 @@
             <li th:each="libro : ${libri}">
                 <!-- Immagine di copertina -->
                 <div>
-                    <a th:href="@{/libri/{id}(id=${libro.id})}">
+                    <a th:href="@{/libro/{id}(id=${libro.id})}">
                         <img th:src="${#lists.isEmpty(libro.immagini) ? '/images/default-cover.jpg' : libro.immagini[0]}" 
                              alt="Copertina libro" />
                     </a>
                 </div>
 
                 <!-- Titolo libro -->
-                <a th:href="@{/libri/{id}(id=${libro.id})}" th:text="${libro.titolo}">Titolo</a>
+                <a th:href="@{/libro/{id}(id=${libro.id})}" th:text="${libro.titolo}">Titolo</a>
             </li>
         </ul>
 
