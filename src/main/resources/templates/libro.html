@@ -1,58 +1,108 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="it" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html xmlns:th="http://www.thymeleaf.org"
+      lang="it"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8" />
-    <link rel="stylesheet" th:href="@{/css/libri.css}" />
-    <title>Elenco Libri</title>
+    <link rel="stylesheet" th:href="@{/css/libro.css}" />
+    <title th:text="${libro.titolo}">Dettaglio Libro</title>
 </head>
 <body>
 
+    <!-- Navbar comune -->
     <div th:replace="~{fragments/navbar :: navbar}"></div>
 
-    <div class="main-content">
-    <h1>Libri disponibili</h1>
+    <div class="libro-container">
+        <!-- Titolo -->
+        <h1 th:text="${libro.titolo}">Titolo Libro</h1>
 
-    <div class="container1">
-        <ul>
-            <li th:each="libro : ${libri}">
-                <!-- Copertina: prima immagine o default -->
-                <div>
-                    <a th:href="@{/libri/{id}(id=${libro.id})}">
-                        <img th:src="${#lists.isEmpty(libro.immagini) ? '/images/default-cover.jpg' : libro.immagini[0]}" 
-                             alt="Copertina libro" class="thumb" />
-                    </a>
-                </div>
-
-                <!-- Titolo -->
-                <a th:href="@{/libri/{id}(id=${libro.id})}" th:text="${libro.titolo}">Titolo Libro</a>
-
-                <!-- Autori multipli -->
-                <p>
-                  <strong>Autori:</strong>
-                  <span th:each="a, iterStat : ${libro.autori}">
-                    <span th:text="${a.nome} + ' ' + ${a.cognome}">Nome Autore</span>
-                    <span th:if="${!iterStat.last}">, </span>
-                  </span>
-                </p>
-
-                <!-- Anteprima immagini secondarie (fino a 3) -->
-                <div class="anteprima-immagini" th:if="${libro.immagini.size() > 1}">
-                  <img th:each="imgUrl, idxStat : ${libro.immagini}" 
-                       th:if="${idxStat.index > 0 and idxStat.index < 4}"
-                       th:src="${imgUrl}" alt="Immagine libro" class="mini-thumb" />
-                </div>
-            </li>
-        </ul>
-
-        <!-- Pulsante Aggiungi Libro visibile solo all'admin -->
-        <div class="aggiungi-libro-container" sec:authorize="hasRole('ADMIN')">
-            <a th:href="@{/libri/admin/nuovo}">
-                <button class="btn-aggiungi-libro">Aggiungi Nuovo Libro</button>
-            </a>
+        <!-- Copertina principale -->
+        <div class="copertina">
+            <img th:src="${#lists.isEmpty(libro.immagini) 
+                           ? '/images/default-cover.jpg' 
+                           : libro.immagini[0]}"
+                 alt="Copertina di [[${libro.titolo}]]" />
         </div>
 
-        <div th:if="${libri == null or #lists.isEmpty(libri)}">Non ci sono libri nel sistema</div>
-    </div>
+        <!-- Meta informazioni -->
+        <p><strong>Genere:</strong> <span th:text="${libro.genere}">Genere</span></p>
+        <p><strong>Anno Pubblicazione:</strong> <span th:text="${libro.annoPubblicazione}">Anno</span></p>
+
+        <!-- Autori -->
+        <div class="autori">
+            <strong>Autore/i:</strong>
+            <span th:each="a, stat : ${libro.autori}">
+                <span th:text="${a.nome} + ' ' + ${a.cognome}">Nome Autore</span>
+                <span th:if="${!stat.last}">, </span>
+            </span>
+        </div>
+
+        <!-- Descrizione -->
+        <div class="descrizione">
+            <h3>Descrizione</h3>
+            <p th:text="${libro.descrizione}">Testo descrizione</p>
+        </div>
+
+        <!-- Immagini secondarie -->
+        <div class="galleria" th:if="${libro.immagini.size() > 1}">
+            <h3>Altre Immagini</h3>
+            <div class="miniature">
+                <img th:each="img, idxStat : ${libro.immagini}"
+                     th:if="${idxStat.index > 0}"
+                     th:src="${img}"
+                     alt="Immagine [[${libro.titolo}]]" />
+            </div>
+        </div>
+
+        <!-- Recensioni esistenti -->
+        <div class="recensioni" th:if="${!#lists.isEmpty(libro.recensioni)}">
+            <h3>Recensioni</h3>
+            <ul>
+                <li th:each="r : ${libro.recensioni}">
+                    <p>
+                        <strong th:text="${r.autore.username}">Username</strong>
+                        (<span th:text="${#dates.format(r.data, 'dd/MM/yyyy')}">Data</span>)
+                    </p>
+                    <p th:text="${r.testo}">Testo recensione</p>
+                    <p><em>Voto: <span th:text="${r.voto}">0</span>/5</em></p>
+                </li>
+            </ul>
+        </div>
+        <div class="no-recensioni" th:if="${#lists.isEmpty(libro.recensioni)}">
+            <p>Ancora nessuna recensione per questo libro.</p>
+        </div>
+
+        <!-- Form per nuova recensione (solo se loggato e non ha già recensito) -->
+        <div class="nuova-recensione" th:if="${recensione != null and !haGiaRecensito}">
+            <h3>Lascia una Recensione</h3>
+            <form th:action="@{/libro/{id}/recensisci(id=${libro.id})}" method="post">
+                <label for="voto">Voto (1–5):</label>
+                <select id="voto" name="voto">
+                    <option th:each="i : ${#numbers.sequence(1,5)}"
+                            th:value="${i}" th:text="${i}">1</option>
+                </select>
+                <br/>
+                <label for="testo">Testo:</label><br/>
+                <textarea id="testo" name="testo" rows="4" cols="50"
+                          th:field="*{testo}"></textarea>
+                <br/>
+                <button type="submit">Invia Recensione</button>
+            </form>
+        </div>
+        <div class="already-reviewed" th:if="${haGiaRecensito}">
+            <p>Hai già recensito questo libro.</p>
+        </div>
+
+        <!-- Azioni admin -->
+        <div class="azioni-admin" sec:authorize="hasRole('ADMIN')">
+            <a th:href="@{/libri/modifica/{id}(id=${libro.id})}" class="btn-modifica">Modifica Libro</a>
+            |
+            <form th:action="@{/libri/elimina/{id}(id=${libro.id})}" method="post" style="display:inline;"
+                  onsubmit="return confirm('Sei sicuro di voler eliminare questo libro?');">
+                <button type="submit" class="btn-elimina">Elimina Libro</button>
+            </form>
+        </div>
+
     </div>
 
 </body>
