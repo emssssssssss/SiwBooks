@@ -93,3 +93,30 @@ INSERT INTO libro_immagini (libro_id, immagini) VALUES
 (26, '/images/hurricane.jpg'),
 (27, '/images/walk.jpg'),
 (28, '/images/bestofme.jpg');
+
+
+INSERT INTO autore (id, nome, cognome, data_nascita, data_morte, nazionalita, foto_url) VALUES
+(1, 'J.R.R.', 'Tolkien', 1892, 1973, 'Britannica', '/images/tolkien.jpg'),
+(2, 'George R.R.', 'Martin', 1948, NULL, 'Statunitense', '/images/martin.jpg'),
+(3, 'C.S.', 'Lewis', 1898, 1963, 'Britannica', '/images/lewis.jpg'),
+(4, 'Patrick', 'Rothfuss', 1973, NULL, 'Statunitense', '/images/rothfuss.jpg'),
+(5, 'Brandon', 'Sanderson', 1975, NULL, 'Statunitense', '/images/sanderson.jpg'),
+(6, 'Robert', 'Jordan', 1948, 2007, 'Statunitense', '/images/jordan.jpg');
+
+
+INSERT INTO autore (id, nome, cognome, data_nascita, data_morte, nazionalita, foto_url) VALUES
+(7, 'Dan', 'Brown', 1964, NULL, 'Statunitense', '/images/brown.jpg'),
+(8, 'Gillian', 'Flynn', 1971, NULL, 'Statunitense', '/images/flynn.jpg');
+
+
+
+INSERT INTO autore (id, nome, cognome, data_nascita, data_morte, nazionalita, foto_url) VALUES
+(9, 'Stephen', 'King', 1947, NULL, 'Statunitense', '/images/king.jpg'),
+(10, 'Mary', 'Shelley', 1797, 1851, 'Britannica', '/images/shelley.jpg');
+
+
+
+INSERT INTO autore (id, nome, cognome, data_nascita, data_morte, nazionalita, foto_url) VALUES
+(11, 'Jane', 'Austen', 1775, 1817, 'Britannica', '/images/austen.jpg'),
+(12, 'Nicholas', 'Sparks', 1965, NULL, 'Statunitense', '/images/sparks.jpg');
+

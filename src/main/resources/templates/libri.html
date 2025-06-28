@@ -14,6 +14,15 @@
     <!-- Titolo -->
     <h1>LIBRI DISPONIBILI</h1>
 
+    <!-- Barra di ricerca -->
+    <form th:action="@{/libri/ricerca}" method="get" class="search-form">
+        <input type="text" name="titolo" placeholder="Cerca per titolo" />
+        <input type="text" name="genere" placeholder="Cerca per genere" />
+        <input type="text" name="autore" placeholder="Cerca per autore" />
+        <button type="submit">Cerca</button>
+    </form>
+
+
     <div class="container1">
         <ul>
             <li th:each="libro : ${libri}">

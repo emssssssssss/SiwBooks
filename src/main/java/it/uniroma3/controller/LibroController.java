@@ -1,5 +1,6 @@
 package it.uniroma3.controller;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import it.uniroma3.model.Libro;
 import it.uniroma3.model.Recensione;
@@ -32,10 +34,29 @@ public class LibroController {
 
     // Mostra elenco libri
     @GetMapping("/libri")
-    public String elencoLibri(Model model) {
-        model.addAttribute("libri", libroService.findAll());
+    public String mostraLibri(@RequestParam(required = false) String titolo,
+                            @RequestParam(required = false) String genere,
+                            @RequestParam(required = false) String autore,
+                            Model model) {
+
+        model.addAttribute("titolo", titolo);
+        model.addAttribute("genere", genere);
+        model.addAttribute("autore", autore);
+
+        model.addAttribute("libri", libroService.ricercaLibri(titolo, genere, autore));
         return "libri";
     }
+
+    @GetMapping("/libri/ricerca")
+    public String ricercaLibri(@RequestParam(required = false) String titolo,
+                            @RequestParam(required = false) String genere,
+                            @RequestParam(required = false) String autore,
+                            Model model) {
+        List<Libro> risultati = libroService.ricercaLibri(titolo, genere, autore);
+        model.addAttribute("libri", risultati);
+        return "libri";
+    }
+
 
     // Mostra dettagli di un libro, incluse le recensioni
     @GetMapping("/libro/{id}")
