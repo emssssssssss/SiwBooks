@@ -9,6 +9,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotBlank;
@@ -36,8 +38,14 @@ public class Libro {
     @ElementCollection
     private List<String> immagini;
 
+
     @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    @JoinTable(
+    name = "autore_libri", // <-- Nome esplicito della tabella di join
+    joinColumns = @JoinColumn(name = "libro_id"),
+    inverseJoinColumns = @JoinColumn(name = "autore_id"))
     private List<Autore> autori;
+    
 
     @OneToMany(mappedBy = "libro", cascade = CascadeType.ALL)
     private List<Recensione> recensioni;

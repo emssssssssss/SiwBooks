@@ -32,7 +32,7 @@ public class Autore {
     private int dataNascita;
 
     @Max(value = 2025, message = "L'anno di morte non può essere nel futuro")
-    private int dataMorte;
+    private Integer dataMorte;
 
     @NotBlank(message = "La nazionalità non può essere nulla")
     private String nazionalita;
@@ -74,10 +74,10 @@ public class Autore {
         this.dataNascita = dataNascita;
     }
 
-    public int getDataMorte() {
+    public Integer getDataMorte() {
         return dataMorte;
     }
-    public void setDataMorte(int dataMorte) {
+    public void setDataMorte(Integer dataMorte) {
         this.dataMorte = dataMorte;
     }
 

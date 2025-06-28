@@ -37,4 +37,16 @@ public class LibroService {
         return libroRepository.findByGenere(genere);
     }
 
+    public List<Libro> ricercaLibri(String titolo, String genere, String autore) {
+        if ((titolo == null || titolo.isEmpty()) &&
+            (genere == null || genere.isEmpty()) &&
+            (autore == null || autore.isEmpty())) {
+            return libroRepository.findAll();
+        }
+
+        return libroRepository.findByTitoloGenereAutore(titolo, genere, autore);
+    }
+
+
+
 }

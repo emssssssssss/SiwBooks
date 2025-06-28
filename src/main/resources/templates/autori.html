@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="it" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" th:href="@{/css/libri.css}" />
+    <title>Autori disponibili</title>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <div class="main-content">
+        <!-- Titolo -->
+        <h1>AUTORI DISPONIBILI</h1>
+
+        <!-- Barra di ricerca (se necessaria per autori) -->
+        <form th:action="@{/autori}" method="get" class="search-form">
+            <input type="text" name="nome" placeholder="Cerca per nome" th:value="${param.nome}" />
+            <input type="text" name="cognome" placeholder="Cerca per cognome" th:value="${param.cognome}" />
+            <button type="submit">Cerca</button>
+        </form>
+
+        <div class="container1">
+            <ul>
+                <li th:each="autore : ${autori}">
+                    <!-- Foto autore -->
+                    <div>
+                        <a th:href="@{/autori/{id}(id=${autore.id})}">
+                            <img th:src="${autore.fotoUrl != null ? autore.fotoUrl : '/images/default-author.jpg'}" 
+                                 alt="Foto autore" />
+                        </a>
+                    </div>
+
+                    <!-- Nome e cognome autore -->
+                    <a th:href="@{/autori/{id}(id=${autore.id})}" th:text="${autore.nome + ' ' + autore.cognome}">Nome Autore</a>
+                </li>
+            </ul>
+
+            <!-- Pulsante visibile solo all'admin -->
+            <div class="aggiungi-autore-container" sec:authorize="hasRole('ADMIN')">
+                <a th:href="@{/autori/admin/nuovo}">
+                    <button class="btn-aggiungi-autore">Aggiungi Nuovo Autore</button>
+                </a>
+            </div>
+
+            <!-- Messaggio se lista vuota -->
+            <div th:if="${autori == null or #lists.isEmpty(autori)}">Non ci sono autori nel sistema</div>
+        </div>
+    </div>
+</body>
+</html>

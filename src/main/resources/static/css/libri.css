@@ -107,6 +107,12 @@ color: #001617;
     margin-top: 30px;
 }
 
+/* Pulsante aggiunta autore */
+.aggiungi-autore-container {
+    text-align: center;
+    margin-top: 30px;
+}
+
 .btn-aggiungi-libro {
     font-size: 1.2em;
     padding: 12px 24px;
@@ -117,6 +123,55 @@ color: #001617;
     cursor: pointer;
 }
 
+.btn-aggiungi-autore {
+    font-size: 1.2em;
+    padding: 12px 24px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+
+
 .btn-aggiungi-libro:hover {
     background-color: #1e7e34;
+}
+
+.btn-aggiungi-autore:hover {
+    background-color: #1e7e34;
+}
+
+
+/* Barra di ricerca */
+.search-form {
+    display: flex;
+    justify-content: center;
+    gap: 1vw;
+    margin: 20px 0;
+    flex-wrap: wrap;
+}
+
+.search-form input[type="text"] {
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+    width: 200px;
+}
+
+.search-form button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.search-form button:hover {
+    background-color: #0056b3;
 }
