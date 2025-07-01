@@ -58,13 +58,12 @@ public class LibroController {
     }
 
 
-    // Mostra dettagli di un libro, incluse le recensioni
     @GetMapping("/libro/{id}")
     public String dettagliLibro(@PathVariable Long id,
                                 Model model,
                                 @AuthenticationPrincipal UserDetails userDetails) {
 
-        Optional<Libro> libroOpt = libroService.findById(id);
+        Optional<Libro> libroOpt = libroService.findByIdWithAutori(id);
         if (libroOpt.isEmpty()) {
             return "redirect:/libri?error=LibroNonTrovato";
         }
@@ -72,20 +71,26 @@ public class LibroController {
         Libro libro = libroOpt.get();
         model.addAttribute("libro", libro);
 
-        // Per mostrare il form di nuova recensione se l'utente è loggato
+        boolean haGiaRecensito = false;
+
+        // Imposta oggetto recensione sempre 
+        Recensione recensione = new Recensione();
+
         if (userDetails != null) {
             var utenteOpt = utenteService.getUtenteByUsername(userDetails.getUsername());
             if (utenteOpt.isPresent()) {
-                boolean haGiaRecensito = libro.getRecensioni().stream()
-                        .anyMatch(r -> r.getAutore().getId().equals(utenteOpt.get().getId()));
-
-                model.addAttribute("haGiaRecensito", haGiaRecensito);
-                model.addAttribute("recensione", new Recensione());
+                haGiaRecensito = libro.getRecensioni().stream()
+                    .anyMatch(r -> r.getAutore().getId().equals(utenteOpt.get().getId()));
             }
         }
 
+        model.addAttribute("haGiaRecensito", haGiaRecensito);
+        model.addAttribute("recensione", recensione); // Sempre presente, anche se non usato nel template
+
         return "libro";
     }
+
+
 
     // Aggiunta (solo admin) — opzionale
     @GetMapping("/admin/nuovo")

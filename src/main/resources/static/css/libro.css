@@ -39,9 +39,7 @@ nav button {
   font-size: 1rem;
 }
 
-
-
-
+/* Corpo pagina */
 body {
     font-family: Arial, sans-serif;
     background-color: #f8f8f8;
@@ -66,15 +64,23 @@ body {
 }
 
 .copertina {
+    width: 300px;
+    height: 450px;
+    margin: 0 auto 20px auto;
     text-align: center;
-    margin-bottom: 20px;
+    overflow: hidden;
 }
 
 .copertina img {
-    max-width: 100%;
+    display: inline-block;   
+    max-width: 300px;        /* dimensione massima orizzontale */
+    max-height: 450px;       /* dimensione massima verticale */
+    width: auto;
     height: auto;
+    object-fit: contain;     /* mantiene il rapporto d'aspetto */
     border-radius: 6px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    margin: 0 auto;    
 }
 
 .libro-container p {
@@ -88,13 +94,13 @@ body {
     font-size: 1.1em;
 }
 
-.descrizione {
-    margin: 20px 0;
+.autori ul {
+    list-style: none;
+    padding: 0;
 }
 
-.descrizione h3 {
-    margin-bottom: 10px;
-    font-size: 1.3em;
+.autori ul li {
+    margin-bottom: 5px;
 }
 
 .galleria {
@@ -106,14 +112,9 @@ body {
     font-size: 1.3em;
 }
 
-.miniature {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-
-.miniature img {
-    width: calc(33% - 10px);
+.galleria img {
+    max-width: 150px;
+    margin-right: 10px;
     border-radius: 4px;
     box-shadow: 0 1px 4px rgba(0,0,0,0.1);
 }
@@ -127,12 +128,7 @@ body {
     margin-bottom: 15px;
 }
 
-.recensioni ul {
-    list-style-type: none;
-    padding: 0;
-}
-
-.recensioni li {
+.recensioni > div {
     background-color: #fafafa;
     padding: 15px;
     margin-bottom: 10px;
@@ -140,51 +136,14 @@ body {
     box-shadow: 0 1px 4px rgba(0,0,0,0.05);
 }
 
-.recensioni li p {
+.recensioni p {
     margin: 5px 0;
 }
 
-.nuova-recensione {
-    margin: 30px 0;
-    padding: 20px;
-    background-color: #fefefe;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-}
-
-.nuova-recensione h3 {
-    margin-bottom: 15px;
-}
-
-.nuova-recensione label {
-    display: block;
-    margin: 10px 0 5px;
-    font-weight: bold;
-}
-
-.nuova-recensione select,
-.nuova-recensione textarea {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-family: inherit;
-    font-size: 1em;
-}
-
-.nuova-recensione button {
-    margin-top: 15px;
-    padding: 0.5em 1em;
-    background-color: #007BFF;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    font-size: 1em;
-    cursor: pointer;
-}
-
-.nuova-recensione button:hover {
-    opacity: 0.9;
+.recensioni .stellina {
+    color: gold;
+    font-size: 1.2em;
+    margin-right: 2px;
 }
 
 .azioni-admin {
@@ -201,6 +160,7 @@ body {
     cursor: pointer;
     font-size: 1em;
     font-weight: bold;
+    transition: opacity 0.3s ease;
 }
 
 .azioni-admin .btn-modifica {

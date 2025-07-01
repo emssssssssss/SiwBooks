@@ -47,6 +47,8 @@ public class LibroService {
         return libroRepository.findByTitoloGenereAutore(titolo, genere, autore);
     }
 
-
+     public Optional<Libro> findByIdWithAutori(Long id) {
+        return libroRepository.findByIdWithAutori(id);
+    }
 
 }
