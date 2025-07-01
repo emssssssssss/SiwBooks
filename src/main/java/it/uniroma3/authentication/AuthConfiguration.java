@@ -52,7 +52,7 @@ public class AuthConfiguration {
         http
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/", "/login", "/registrazione", "/css/**", "/home", "/images/**", "/error", "/libri","/libri/**", "/libro", "/libro/**", "/autori",
-                                    "/autore", "/autore/**").permitAll()
+                                    "/autore", "/autori/**").permitAll()
                 
                                 // Solo ADMIN può accedere a /admin/**
                 .requestMatchers("/admin/**").hasRole("ADMIN")

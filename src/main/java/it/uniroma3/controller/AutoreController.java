@@ -27,29 +27,31 @@ public class AutoreController {
         return "autori";
     }
 
-    @GetMapping("autori/{id}")
-    public String dettaglioAutore(@PathVariable Long id, Model model) {
-        Optional<Autore> autoreOpt = autoreService.findById(id);
-        if (autoreOpt.isEmpty())
-            return "redirect:/autori";
-
-        model.addAttribute("autore", autoreOpt.get());
-        return "autore";
+@GetMapping("/autori/{id}")
+public String dettaglioAutore(@PathVariable Long id, Model model) {
+    // Carica autore insieme alla lista di libri (join fetch)
+    Optional<Autore> autoreOpt = autoreService.findByIdWithLibri(id);
+    if (autoreOpt.isEmpty()) {
+        return "redirect:/autori";
     }
 
-    @GetMapping("autori/admin/nuovo")
+    model.addAttribute("autore", autoreOpt.get());
+    return "autore";
+}
+
+    @GetMapping("/autori/admin/nuovo")
     public String formNuovoAutore(Model model) {
         model.addAttribute("autore", new Autore());
         return "formAutore";
     }
 
-    @PostMapping("autori/admin/nuovo")
+    @PostMapping("/autori/admin/nuovo")
     public String salvaAutore(@ModelAttribute Autore autore) {
         autoreService.save(autore);
         return "redirect:/autori";
     }
 
-    @PostMapping("autori/admin/{id}/elimina")
+    @PostMapping("/autori/admin/{id}/elimina")
     public String eliminaAutore(@PathVariable Long id) {
         autoreService.deleteById(id);
         return "redirect:/autori";

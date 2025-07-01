@@ -29,4 +29,8 @@ public class AutoreService {
     public void deleteById(Long id) {
         autoreRepository.deleteById(id);
     }
+
+    public Optional<Autore> findByIdWithLibri(Long id) {
+        return autoreRepository.findByIdWithLibri(id);
+    }
 }

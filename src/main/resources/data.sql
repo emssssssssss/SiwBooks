@@ -120,3 +120,40 @@ INSERT INTO autore (id, nome, cognome, data_nascita, data_morte, nazionalita, fo
 (11, 'Jane', 'Austen', 1775, 1817, 'Britannica', '/images/austen.jpg'),
 (12, 'Nicholas', 'Sparks', 1965, NULL, 'Statunitense', '/images/sparks.jpg');
 
+
+
+-- Fantasy (Autori: Tolkien=1, Martin=2, Lewis=3, Rothfuss=4, Sanderson=5, Jordan=6)
+INSERT INTO autore_libri (libro_id, autore_id) VALUES (1, 1); 
+INSERT INTO autore_libri (libro_id, autore_id) VALUES (2, 2);  
+INSERT INTO autore_libri (libro_id, autore_id) VALUES (3, 3);  
+INSERT INTO autore_libri (libro_id, autore_id) VALUES (4, 4);  
+INSERT INTO autore_libri (libro_id, autore_id) VALUES (5, 1);  
+INSERT INTO autore_libri (libro_id, autore_id) VALUES (6, 5);  
+INSERT INTO autore_libri (libro_id, autore_id) VALUES (7, 6);  
+
+-- Thriller (Autore: Dan Brown=7, Gillian Flynn=8)
+INSERT INTO autore_libri (libro_id, autore_id) VALUES (8, 7); 
+INSERT INTO autore_libri (libro_id, autore_id) VALUES (9, 7);  
+INSERT INTO autore_libri (libro_id, autore_id) VALUES (10, 7); 
+INSERT INTO autore_libri (libro_id, autore_id) VALUES (11, 7); 
+INSERT INTO autore_libri (libro_id, autore_id) VALUES (12, 7); 
+INSERT INTO autore_libri (libro_id, autore_id) VALUES (13, 8); 
+INSERT INTO autore_libri (libro_id, autore_id) VALUES (14, 8); 
+
+-- Horror (Autori: Stephen King=9, Mary Shelley=10)
+INSERT INTO autore_libri (libro_id, autore_id) VALUES (15, 9); 
+INSERT INTO autore_libri (libro_id, autore_id) VALUES (16, 9); 
+INSERT INTO autore_libri (libro_id, autore_id) VALUES (17, 9); 
+INSERT INTO autore_libri (libro_id, autore_id) VALUES (18, 9); 
+INSERT INTO autore_libri (libro_id, autore_id) VALUES (19, 9); 
+INSERT INTO autore_libri (libro_id, autore_id) VALUES (20, 9); 
+INSERT INTO autore_libri (libro_id, autore_id) VALUES (21, 10);
+
+-- Romance (Autori: Jane Austen=11, Nicholas Sparks=12)
+INSERT INTO autore_libri (libro_id, autore_id) VALUES (22, 11);
+INSERT INTO autore_libri (libro_id, autore_id) VALUES (23, 11);
+INSERT INTO autore_libri (libro_id, autore_id) VALUES (24, 11);
+INSERT INTO autore_libri (libro_id, autore_id) VALUES (25, 12);
+INSERT INTO autore_libri (libro_id, autore_id) VALUES (26, 12);
+INSERT INTO autore_libri (libro_id, autore_id) VALUES (27, 12);
+INSERT INTO autore_libri (libro_id, autore_id) VALUES (28, 12);
