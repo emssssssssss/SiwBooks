@@ -94,4 +94,14 @@ public class Autore {
     public void setFotoUrl(String fotoUrl) {
         this.fotoUrl = fotoUrl;
     }
+    
+
+    public List<Libro> getLibri() {
+        return libri;
+    }
+
+    public void setLibri(List<Libro> libri) {
+        this.libri = libri;
+    }
+
 }

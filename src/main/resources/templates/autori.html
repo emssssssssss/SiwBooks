@@ -14,12 +14,6 @@
         <!-- Titolo -->
         <h1>AUTORI DISPONIBILI</h1>
 
-        <!-- Barra di ricerca (se necessaria per autori) -->
-        <form th:action="@{/autori}" method="get" class="search-form">
-            <input type="text" name="nome" placeholder="Cerca per nome" th:value="${param.nome}" />
-            <input type="text" name="cognome" placeholder="Cerca per cognome" th:value="${param.cognome}" />
-            <button type="submit">Cerca</button>
-        </form>
 
         <div class="container1">
             <ul>

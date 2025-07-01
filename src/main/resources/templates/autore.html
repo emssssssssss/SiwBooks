@@ -3,51 +3,60 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
   <meta charset="UTF-8"/>
-  <link rel="stylesheet" th:href="@{/css/autore.css}"/>
+  <link rel="stylesheet" th:href="@{/css/libro.css}"/>
   <title th:text="${autore.nome} + ' ' + ${autore.cognome}">Autore</title>
 </head>
 <body>
 
+  <!-- Navbar -->
   <div th:replace="~{fragments/navbar :: navbar}"></div>
 
-  <div class="autore-container">
+  <!-- Contenitore autore -->
+  <div class="libro-container">
     <h1 th:text="${autore.nome} + ' ' + ${autore.cognome}">Nome Autore</h1>
 
-    <div class="img-container">
-      <img th:src="${autore.fotoUrl}" alt="Immagine autore"/>
+    <!-- Foto autore -->
+    <div class="copertina">
+      <img th:src="${autore.fotoUrl}" alt="Immagine autore" />
     </div>
 
-   
-    
-   <!--  
-    <div th:if="${autore.biografia != null}">
-      <h3>Biografia</h3>
-      <p th:text="${autore.biografia}">Biografia autore…</p>
-    </div>  -->
-
+    <!-- Dati personali -->
     <p>
-      <strong>Anno di nascita:</strong>
-      <span th:text="${autore.dataNascita}">…</span>
+      <strong>Nazionalità:</strong>
+      <span th:text="${autore.nazionalita}">Italiana</span>
     </p>
+
+    <p th:if="${autore.dataNascita > 0}">
+      <strong>Anno di nascita:</strong>
+      <span th:text="${autore.dataNascita}">1920</span>
+    </p>
+
     <p th:if="${autore.dataMorte != null}">
       <strong>Anno di morte:</strong>
-      <span th:text="${autore.dataMorte}">…</span>
+      <span th:text="${autore.dataMorte}">1990</span>
     </p>
 
-    <div th:if="${autore.libri != null and !autore.libri.empty}">
-      <h3>Libri dell'autore:</h3>
-      <ul>
+    <!-- Lista libri -->
+    <div class="autori">
+      <h3 th:if="${autore.libri != null and !autore.libri.empty}">Libri dell'autore:</h3>
+      <ul th:if="${autore.libri != null and !autore.libri.empty}">
         <li th:each="libro : ${autore.libri}">
           <a th:href="@{/libro/{id}(id=${libro.id})}"
              th:text="${libro.titolo}">Titolo Libro</a>
         </li>
       </ul>
-    </div>
-    <div th:if="${autore.libri == null or autore.libri.empty}">
-      <p>Nessun libro associato a questo autore.</p>
+      <p th:if="${autore.libri == null or autore.libri.empty}">
+        Nessun libro associato a questo autore.
+      </p>
     </div>
 
-    <!-- Azioni STAFF/ADMIN… -->
+    <!-- Azioni riservate a STAFF o ADMIN -->
+    <div class="azioni-admin" sec:authorize="hasRole('ADMIN') or hasRole('STAFF')">
+      <a th:href="@{/admin/autore/edit/{id}(id=${autore.id})}" class="btn-modifica">Modifica</a>
+      <form th:action="@{/admin/autore/delete/{id}(id=${autore.id})}" method="post" style="display:inline;">
+        <button type="submit" class="btn-elimina">Elimina</button>
+      </form>
+    </div>
   </div>
 
 </body>
