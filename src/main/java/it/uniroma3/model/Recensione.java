@@ -1,36 +1,45 @@
 package it.uniroma3.model;
 
+//import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
+//import jakarta.persistence.Version;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 public class Recensione {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+  
+
+    @NotBlank(message = "Il titolo della recensione è obbligatorio")
     private String titolo;
 
-    private int voto; 
-   
+    @Min(value = 1, message = "Il voto deve essere almeno 1")
+    @Max(value = 5, message = "Il voto non può superare 5")
+    private Integer voto;
 
-    @Lob  //Large Object, annotazione per mappare campi che possono contenere grandi quantità di dati
+    
+    @NotBlank(message = "Il testo della recensione è obbligatorio")
     private String testo;
 
     @ManyToOne
     private Libro libro;
 
-
     @ManyToOne
-    private Utente autore;
+    private Utente utente;
 
+    // getters / setters
 
-    
     public Long getId() {
         return id;
     }
@@ -38,6 +47,7 @@ public class Recensione {
     public void setId(Long id) {
         this.id = id;
     }
+
 
     public String getTitolo() {
         return titolo;
@@ -47,14 +57,22 @@ public class Recensione {
         this.titolo = titolo;
     }
 
-    public int getVoto() {
+    public Integer getVoto() {
         return voto;
     }
 
-    public void setVoto(int voto) {
+    public void setVoto(Integer voto) {
         this.voto = voto;
     }
-    
+
+    public String getTesto() {
+        return testo;
+    }
+
+    public void setTesto(String testo) {
+        this.testo = testo;
+    }
+
     public Libro getLibro() {
         return libro;
     }
@@ -62,13 +80,12 @@ public class Recensione {
     public void setLibro(Libro libro) {
         this.libro = libro;
     }
-        
-    public Utente getAutore() {
-        return autore;
+
+    public Utente getUtente() {
+        return utente;
     }
 
-    public void setAutore(Utente autore) {
-        this.autore = autore;
+    public void setUtente(Utente utente) {
+        this.utente = utente;
     }
-
 }

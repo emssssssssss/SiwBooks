@@ -20,7 +20,7 @@ import jakarta.validation.constraints.NotNull;
 public class Libro {
     
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @NotBlank(message = "Il titolo non può essere nullo")

@@ -1,102 +1,92 @@
 package it.uniroma3.controller;
 
-import java.util.Optional;
+import java.security.Principal;
+//import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import it.uniroma3.model.Libro;
 import it.uniroma3.model.Recensione;
 import it.uniroma3.model.Utente;
-import it.uniroma3.service.LibroService;
+import it.uniroma3.repository.LibroRepository;
+import it.uniroma3.repository.UtenteRepository;
 import it.uniroma3.service.RecensioneService;
-import it.uniroma3.service.UtenteService;
+
 import jakarta.validation.Valid;
 
 @Controller
-@RequestMapping("/recensioni")
+@RequestMapping("/libro")
 public class RecensioneController {
+
     @Autowired
     private RecensioneService recensioneService;
 
     @Autowired
-    private LibroService libroService;
+    private UtenteRepository utenteRepository;
 
-     @Autowired
-    private UtenteService utenteService;
+    @Autowired
+    private LibroRepository libroRepository;
 
-    // Aggiunta recensione (POST /recensioni/libro/{id})
-    @PostMapping("/libro/{id}")
-    public String aggiungiRecensione(@PathVariable Long id,
-                                     @Valid @ModelAttribute("recensione") Recensione recensione,
-                                     BindingResult bindingResult,
-                                     @AuthenticationPrincipal UserDetails userDetails,
-                                     Model model) {
+    @PostMapping("/{id}/recensisci")
+    public String inserisciRecensione(@PathVariable Long id,
+            @Valid @ModelAttribute("recensione") Recensione recensioneForm,
+            BindingResult bindingResult,
+            Principal principal,
+            Model model) {
 
+        // prendi libro e utente
+        Libro libro = libroRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Libro non trovato"));
+        Utente utente = utenteRepository.findByUsername(principal.getName())
+                .orElseThrow(() -> new UsernameNotFoundException("Utente non trovato"));
+
+        // se validazione fallisce, ripopola la pagina
         if (bindingResult.hasErrors()) {
-            return "redirect:/libri/" + id + "?error=validation";
+            model.addAttribute("libro", libro);
+            model.addAttribute("recensioni", libro.getRecensioni());
+            model.addAttribute("haGiaRecensito",
+                    recensioneService.esisteRecensionePerLibroEAutore(id, utente.getId()));
+            model.addAttribute("haGiaLetto", utente.getLibriLetti().contains(libro));
+            return "libro";
         }
 
-        Optional<Libro> libroOpt = libroService.findById(id);
-        Optional<Utente> utenteOpt = utenteService.getUtenteByUsername(userDetails.getUsername());
-
-        if (libroOpt.isPresent() && utenteOpt.isPresent()) {
-            Libro libro = libroOpt.get();
-            Utente utente = utenteOpt.get();
-
-            boolean giàRecensito = libro.getRecensioni().stream()
-                    .anyMatch(r -> r.getAutore().getId().equals(utente.getId()));
-
-            if (giàRecensito) {
-                return "redirect:/libri/" + id + "?error=giàRecensito";
-            }
-
-            recensione.setLibro(libro);
-            recensione.setAutore(utente);
-            recensioneService.save(recensione);
+        // blocca duplicati
+        if (recensioneService.esisteRecensionePerLibroEAutore(id, utente.getId())) {
+            model.addAttribute("libro", libro);
+            model.addAttribute("recensioni", libro.getRecensioni());
+            model.addAttribute("haGiaRecensito", true);
+            model.addAttribute("haGiaLetto", utente.getLibriLetti().contains(libro));
+            return "libro";
         }
 
-        return "redirect:/libri/" + id;
+        // crea nuova recensione, evita di usare quella del form
+        Recensione nuovaRecensione = new Recensione();
+        nuovaRecensione.setTitolo(recensioneForm.getTitolo());
+        nuovaRecensione.setTesto(recensioneForm.getTesto());
+        nuovaRecensione.setVoto(recensioneForm.getVoto());
+        nuovaRecensione.setLibro(libro);
+        nuovaRecensione.setUtente(utente);
+
+        recensioneService.save(nuovaRecensione);
+
+        return "redirect:/libro/" + id;
     }
 
-    
+    // POST /libro/{id}/elimina (se necessario)
     @PostMapping("/{id}/elimina")
-    public String eliminaRecensione(@PathVariable Long id,
-                                    @RequestParam("libroId") Long libroId,
-                                    @AuthenticationPrincipal UserDetails userDetails) {
+    public String eliminaRecensione(
+            @PathVariable Long id,
+            @RequestParam("libroId") Long libroId,
+            Principal principal) {
 
-        Optional<Recensione> recensioneOpt = recensioneService.findById(id);
-        if (recensioneOpt.isEmpty()) {
-            return "redirect:/libri/" + libroId + "?error=notfound";
-        }
-
-        Recensione recensione = recensioneOpt.get();
-
-        Optional<Utente> utenteOpt = utenteService.getUtenteByUsername(userDetails.getUsername());
-        if (utenteOpt.isEmpty()) {
-            return "redirect:/login";
-        }
-
-        Utente utente = utenteOpt.get();
-
-        // Solo autore o admin possono cancellare
-        if (!recensione.getAutore().getId().equals(utente.getId()) && utente.getRuolo() != Utente.Ruolo.ADMIN) {
-            return "redirect:/libri/" + libroId + "?error=forbidden";
-        }
-
-        recensioneService.deleteById(id);
-
-        return "redirect:/libri/" + libroId + "?success=deleted";
+        // se non serve, commenta o rimuovi questo metodo
+        return "redirect:/libro/" + libroId;
     }
-
-
 }
