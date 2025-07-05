@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 
 import it.uniroma3.model.Recensione;
 import it.uniroma3.repository.RecensioneRepository;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 
 @Service
 public class RecensioneService {
@@ -22,11 +24,31 @@ public class RecensioneService {
         return recensioneRepository.findById(id);
     }
 
-    public Recensione save(Recensione recensione) {
-        return recensioneRepository.save(recensione);
+    public void save(Recensione recensione) {
+        if (recensione.getId() != null) {
+            throw new IllegalStateException("Non puoi riusare una recensione già esistente");
+        }
+        recensioneRepository.save(recensione);
     }
 
     public void deleteById(Long id) {
         recensioneRepository.deleteById(id);
     }
+
+    @Transactional
+    public Recensione aggiornaRecensione(Recensione nuovaRecensione) {
+        Recensione recensioneDB = recensioneRepository.findById(nuovaRecensione.getId())
+                .orElseThrow(() -> new EntityNotFoundException("Recensione non trovata"));
+
+        recensioneDB.setTesto(nuovaRecensione.getTesto());
+        recensioneDB.setTitolo(nuovaRecensione.getTitolo());
+        recensioneDB.setVoto(nuovaRecensione.getVoto());
+
+        return recensioneRepository.save(recensioneDB);
+    }
+
+    public boolean esisteRecensionePerLibroEAutore(long id, Long id2) {
+        return recensioneRepository.existsByLibroIdAndUtenteId(id, id2);
+    }
+
 }

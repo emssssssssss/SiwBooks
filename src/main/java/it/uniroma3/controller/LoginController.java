@@ -9,18 +9,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-//import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-//import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
 import it.uniroma3.model.Utente;
 import it.uniroma3.service.CustomUserDetailsService;
 import it.uniroma3.service.UtenteService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-//import jakarta.validation.Valid;
+import jakarta.validation.Valid;
 
 @Controller
 public class LoginController {
@@ -34,104 +31,84 @@ public class LoginController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-
-    // Mostra pagina login e gestisce errori/logout tramite parametri URL
-    /*@GetMapping("/login")
-    public String login(@RequestParam(value = "error", required = false) String error,
-                        @RequestParam(value = "logout", required = false) String logout,
-                        Model model) {
-        if (error != null) {
-            model.addAttribute("errore", "Credenziali non valide");
-        }
-        if (logout != null) {
-            model.addAttribute("message", "Logout effettuato con successo");
-        }
-        return "login";  
-    }*/
-
+    // Mostra la pagina di login
     @GetMapping("/login")
     public String login(@RequestParam(name = "redirect", required = false) String redirect, Model model) {
         model.addAttribute("redirect", redirect);
-        return "login"; // il template login.html
+        return "login";
     }
 
+    // Mostra la pagina di login in caso di errore
     @GetMapping("/loginError")
     public String loginError(Model model) {
         model.addAttribute("errore", "Credenziali non valide");
         return "login";
     }
 
+    // Mostra il form di registrazione
     @GetMapping("/registrazione")
     public String mostraRegistrazione(Model model) {
         model.addAttribute("utente", new Utente());
-        return "registrazione"; 
+        return "registrazione";
     }
 
-
+    // Gestione POST della registrazione
     @PostMapping("/registrazione")
-    public String registrazione(@RequestParam String email,
-                                @RequestParam String username,
-                                @RequestParam String password,
-                                @RequestParam String passwordBis,
-                                @RequestParam(required = false) String codiceAmministratore,
-                                Model model,
-                                HttpServletRequest request) {
+    public String registrazione(@Valid @ModelAttribute("utente") Utente utente,
+                                 BindingResult bindingResult,
+                                 @RequestParam String passwordBis,
+                                 @RequestParam(required = false) String codiceAmministratore,
+                                 Model model,
+                                 HttpServletRequest request) {
 
-        // Verifica coerenza password
-        if (!password.equals(passwordBis)) {
-            model.addAttribute("errore", "Le password non coincidono");
-            model.addAttribute("utente", new Utente());
+        // Verifica password e conferma
+        if (!utente.getPassword().equals(passwordBis)) {
+            bindingResult.rejectValue("password", "error.utente", "Le password non coincidono");
+        }
+
+        // Unicità username
+        if (utenteService.getUtenteByUsername(utente.getUsername()).isPresent()) {
+            bindingResult.rejectValue("username", "error.utente", "Username già in uso");
+        }
+
+        // Unicità email
+        if (utenteService.getUtenteByEmail(utente.getEmail()).isPresent()) {
+            bindingResult.rejectValue("email", "error.utente", "Email già in uso");
+        }
+
+        // Se ci sono errori, torna alla pagina
+        if (bindingResult.hasErrors()) {
             return "registrazione";
         }
 
-        // Controllo unicità username
-        if (utenteService.getUtenteByUsername(username).isPresent()) {
-            model.addAttribute("errore", "Username già in uso");
-            model.addAttribute("utente", new Utente());
-            return "registrazione";
-        }
-
-        // Controllo unicità email
-        if (utenteService.getUtenteByEmail(email).isPresent()) {
-            model.addAttribute("errore", "Email già in uso");
-            model.addAttribute("utente", new Utente());
-            return "registrazione";
-        }
-
-        // Crea utente e imposta ruolo
-        Utente utente = new Utente();
-        utente.setEmail(email);
-        utente.setUsername(username);
-        utente.setPassword(passwordEncoder.encode(password));
+        // Assegna ruolo
         utente.setRuolo(utenteService.isAmministratore(codiceAmministratore)
                         ? Utente.Ruolo.ADMIN
                         : Utente.Ruolo.USER);
 
+        // Codifica password
+        utente.setPassword(passwordEncoder.encode(utente.getPassword()));
+
         try {
             utenteService.addUtente(utente);
         } catch (DataIntegrityViolationException e) {
-            // In caso di vincolo di unicità in DB
             model.addAttribute("errore", "Username o email già in uso");
-            model.addAttribute("utente", new Utente());
             return "registrazione";
         } catch (Exception e) {
             model.addAttribute("errore", "Errore durante la registrazione: " + e.getMessage());
-            model.addAttribute("utente", new Utente());
             return "registrazione";
         }
 
-        // Auto‑login
-        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        // Auto-login dopo registrazione
+        UserDetails userDetails = userDetailsService.loadUserByUsername(utente.getUsername());
         UsernamePasswordAuthenticationToken authToken =
-            new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authToken);
 
         HttpSession session = request.getSession(true);
         session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
-                            SecurityContextHolder.getContext());
+                             SecurityContextHolder.getContext());
 
         return "redirect:/home";
     }
-
-    
 }

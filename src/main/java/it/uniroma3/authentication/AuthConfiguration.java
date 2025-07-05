@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 //import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 //import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -60,6 +61,11 @@ public class AuthConfiguration {
                 
                 // Solo USER o ADMIN possono accedere
                 .requestMatchers("/user/**", "/profilo", "/profilo/**").hasAnyRole("USER", "ADMIN")
+
+                
+                .requestMatchers(HttpMethod.POST, "/libro/**/recensisci").hasAnyRole("USER", "ADMIN")
+
+
 
                 .anyRequest().authenticated()
             )

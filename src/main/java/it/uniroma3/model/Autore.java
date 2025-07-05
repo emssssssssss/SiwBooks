@@ -17,7 +17,7 @@ import jakarta.validation.constraints.Size;
 public class Autore {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotBlank(message = "Il nome non può essere nullo")

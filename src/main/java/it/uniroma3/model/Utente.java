@@ -28,7 +28,7 @@ import jakarta.validation.constraints.Size;
 @Entity
 public class Utente implements UserDetails{
     @Id 
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotBlank(message = "Username obbligatorio")
@@ -56,7 +56,7 @@ public class Utente implements UserDetails{
         ADMIN
     }
 
-    @OneToMany(cascade = { CascadeType.PERSIST, CascadeType.REMOVE }, mappedBy = "autore")
+    @OneToMany(cascade = { CascadeType.ALL }, mappedBy = "utente")
     private List<Recensione> recensioni = new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.EAGER)

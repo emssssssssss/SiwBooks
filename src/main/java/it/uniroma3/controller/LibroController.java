@@ -1,5 +1,6 @@
 package it.uniroma3.controller;
 
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.Path;
@@ -48,6 +49,7 @@ public class LibroController {
         model.addAttribute("titolo", titolo);
         model.addAttribute("genere", genere);
         model.addAttribute("autore", autore);
+        model.addAttribute("recensione", new Recensione());
 
         model.addAttribute("libri", libroService.ricercaLibri(titolo, genere, autore));
         return "libri";
@@ -87,7 +89,7 @@ public class LibroController {
 
                 // Verifica se l'utente ha già scritto una recensione per questo libro
                 haGiaRecensito = libro.getRecensioni().stream()
-                    .anyMatch(r -> r.getAutore().getId().equals(utente.getId()));
+                    .anyMatch(r -> r.getUtente().getId().equals(utente.getId()));
 
                 // Verifica se l'utente ha già segnato il libro come letto
                 haGiaLetto = utente.getLibriLetti().stream()
@@ -101,6 +103,8 @@ public class LibroController {
 
         // Passa un oggetto recensione vuoto per il form, se serve
         model.addAttribute("recensione", new Recensione());
+        model.addAttribute("recensioni", libro.getRecensioni());
+
 
         return "libro";
     }
@@ -155,7 +159,8 @@ public class LibroController {
             if (!copertinaFile.isEmpty()) {
                 String folder = "src/main/resources/static/images";
                 byte[] bytes = copertinaFile.getBytes();
-                Path path = Paths.get(folder + copertinaFile.getOriginalFilename());
+                Path path = Paths.get(folder + File.separator + copertinaFile.getOriginalFilename());
+
                 Files.write(path, bytes);
 
                 // Controlla se la lista immagini è null, crea nuova
@@ -179,4 +184,10 @@ public class LibroController {
         libroService.deleteById(id);
         return "redirect:/libri";
     }
+
+    @GetMapping("libro/{id}/aggiungiRecensione")
+    public String getMethodName(@RequestParam String param) {
+        return new String();
+    }
+    
 }

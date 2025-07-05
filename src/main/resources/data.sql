@@ -1,7 +1,9 @@
 
-INSERT INTO utente (id, email, username, password, ruolo)
+
+
+
+INSERT INTO utente (email, username, password, ruolo)
 VALUES (
-  '1',
   'admin@email.com',
   'admin',
   '$2a$11$SXWTmeJqut5qWbeYWHgAfuaN2N4tHJZ6z2MwUqZG.0DnrBIhFJy2G', -- "admin123"
@@ -158,3 +160,9 @@ INSERT INTO autore_libri (libro_id, autore_id) VALUES (25, 12);
 INSERT INTO autore_libri (libro_id, autore_id) VALUES (26, 12);
 INSERT INTO autore_libri (libro_id, autore_id) VALUES (27, 12);
 INSERT INTO autore_libri (libro_id, autore_id) VALUES (28, 12);
+
+
+
+
+
+
