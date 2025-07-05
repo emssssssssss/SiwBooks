@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import it.uniroma3.model.Libro;
 import it.uniroma3.model.Utente;
 import it.uniroma3.repository.UtenteRepository;
 
@@ -56,4 +57,10 @@ public class UtenteService {
         return codice != null && codice.equals("Panino_con_pomodori");
     }
 
+    public void rimuoviLibroLetto(Utente utente, Libro libro) {
+        if (utente.getLibriLetti().contains(libro)) {
+            utente.getLibriLetti().remove(libro);
+            this.save(utente);
+        }
+    }
 }

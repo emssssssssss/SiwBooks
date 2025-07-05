@@ -1,29 +1,18 @@
-<form th:action="@{/libri/admin}" th:object="${libro}" method="post" enctype="multipart/form-data">
-  
-  <div>
-    <label>Titolo</label>
-    <input type="text" th:field="*{titolo}" />
-  </div>
+<form th:action="@{/admin}" th:object="${libro}" method="post" enctype="multipart/form-data">
+    <label>Titolo:</label>
+    <input type="text" th:field="*{titolo}" required/>
+    <label>Genere:</label>
+    <input type="text" th:field="*{genere}" required/>
 
-  <!-- Selettore multiplo autori -->
-  <div>
-    <label>Autori</label>
-    <select th:field="*{autori}" multiple size="5">
-      <option th:each="a : ${autori}"
-              th:value="${a.id}"
-              th:text="${a.nome} + ' ' + ${a.cognome}">
-      </option>
+    <label>Copertina Libro:</label>
+    <input type="file" name="copertinaFile" accept="image/*" />
+
+    <label>Autori:</label>
+    <select multiple th:field="*{autori}">
+        <option th:each="autore : ${autori}" 
+                th:value="${autore}" 
+                th:text="${autore.nome} + ' ' + ${autore.cognome}"></option>
     </select>
-  </div>
 
-  <!-- Upload multiplo immagini -->
-  <div>
-    <label>Immagini (URL o file upload)</label>
-    <input type="file" name="files" multiple />
-    <!-- oppure, se usi soltanto URL:
-    <textarea th:field="*{immagini}" placeholder="Inserisci un URL per riga"></textarea>
-    -->
-  </div>
-
-  <button type="submit">Salva</button>
+    <button type="submit">Salva Libro</button>
 </form>

@@ -1,5 +1,9 @@
 package it.uniroma3.controller;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,9 +17,11 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import it.uniroma3.model.Libro;
 import it.uniroma3.model.Recensione;
+import it.uniroma3.model.Utente;
 import it.uniroma3.service.AutoreService;
 import it.uniroma3.service.LibroService;
 import it.uniroma3.service.UtenteService;
@@ -72,23 +78,65 @@ public class LibroController {
         model.addAttribute("libro", libro);
 
         boolean haGiaRecensito = false;
-
-        // Imposta oggetto recensione sempre 
-        Recensione recensione = new Recensione();
+        boolean haGiaLetto = false;
 
         if (userDetails != null) {
-            var utenteOpt = utenteService.getUtenteByUsername(userDetails.getUsername());
+            Optional<Utente> utenteOpt = utenteService.getUtenteByUsername(userDetails.getUsername());
             if (utenteOpt.isPresent()) {
+                Utente utente = utenteOpt.get();
+
+                // Verifica se l'utente ha già scritto una recensione per questo libro
                 haGiaRecensito = libro.getRecensioni().stream()
-                    .anyMatch(r -> r.getAutore().getId().equals(utenteOpt.get().getId()));
+                    .anyMatch(r -> r.getAutore().getId().equals(utente.getId()));
+
+                // Verifica se l'utente ha già segnato il libro come letto
+                haGiaLetto = utente.getLibriLetti().stream()
+                    .anyMatch(l -> l.getId() == libro.getId());
+
             }
         }
 
         model.addAttribute("haGiaRecensito", haGiaRecensito);
-        model.addAttribute("recensione", recensione); // Sempre presente, anche se non usato nel template
+        model.addAttribute("haGiaLetto", haGiaLetto);
+
+        // Passa un oggetto recensione vuoto per il form, se serve
+        model.addAttribute("recensione", new Recensione());
 
         return "libro";
     }
+
+
+    @PostMapping("/libro/{id}/letto")
+    public String segnaComeLetto(@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails) {
+        if (userDetails != null) {
+            Optional<Libro> libroOpt = libroService.findById(id);
+            Optional<Utente> utenteOpt = utenteService.getUtenteByUsername(userDetails.getUsername());
+
+            if (libroOpt.isPresent() && utenteOpt.isPresent()) {
+                Utente utente = utenteOpt.get();
+                utente.aggiungiLibroLetto(libroOpt.get());
+                utenteService.save(utente);
+            }
+        }
+        return "redirect:/libro/" + id;
+    }
+
+    @PostMapping("/libro/{id}/non-letto")
+    public String segnaComeNonLetto(@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails) {
+        if (userDetails != null) {
+            Optional<Libro> libroOpt = libroService.findById(id);
+            Optional<Utente> utenteOpt = utenteService.getUtenteByUsername(userDetails.getUsername());
+
+            if (libroOpt.isPresent() && utenteOpt.isPresent()) {
+                Utente utente = utenteOpt.get();
+                Libro libro = libroOpt.get();
+
+                utenteService.rimuoviLibroLetto(utente, libro);
+            }
+        }
+        return "redirect:/libro/" + id;
+    }
+
 
 
 
@@ -100,9 +148,28 @@ public class LibroController {
         return "formLibro";
     }
 
-    @PostMapping("/admin")
-    public String salvaLibro(@ModelAttribute Libro libro) {
-        libroService.save(libro);
+    @PostMapping("/admin/nuovo")
+    public String salvaLibro(@ModelAttribute Libro libro,
+                            @RequestParam("copertinaFile") MultipartFile copertinaFile) {
+        try {
+            if (!copertinaFile.isEmpty()) {
+                String folder = "src/main/resources/static/images";
+                byte[] bytes = copertinaFile.getBytes();
+                Path path = Paths.get(folder + copertinaFile.getOriginalFilename());
+                Files.write(path, bytes);
+
+                // Controlla se la lista immagini è null, crea nuova
+                if (libro.getImmagini() == null) {
+                    libro.setImmagini(new ArrayList<>());
+                }
+                // Aggiungi la nuova immagine (path relativo)
+                libro.getImmagini().add("/images" + copertinaFile.getOriginalFilename());
+            }
+            libroService.save(libro);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "redirect:/admin/nuovo?error=uploadFallito";
+        }
         return "redirect:/libri";
     }
 

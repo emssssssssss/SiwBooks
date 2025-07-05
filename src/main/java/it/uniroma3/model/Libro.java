@@ -20,7 +20,7 @@ import jakarta.validation.constraints.NotNull;
 public class Libro {
     
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
     @NotBlank(message = "Il titolo non può essere nullo")
@@ -49,6 +49,10 @@ public class Libro {
 
     @OneToMany(mappedBy = "libro", cascade = CascadeType.ALL)
     private List<Recensione> recensioni;
+
+    @ManyToMany(mappedBy = "libriLetti")
+    private List<Utente> lettori;
+
 
 
 
@@ -123,5 +127,14 @@ public class Libro {
     public void setImmagini(List<String> immagini) {
         this.immagini = immagini;
     }
+
+    public List<Utente> getLettori() {
+        return lettori;
+    }
+
+    public void setLettori(List<Utente> lettori) {
+        this.lettori = lettori;
+    }
+
 
 }

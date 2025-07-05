@@ -1,9 +1,10 @@
 
-INSERT INTO utente (email, username, password, ruolo)
+INSERT INTO utente (id, email, username, password, ruolo)
 VALUES (
+  '1',
   'admin@email.com',
   'admin',
-  '$2a$10$dKcrLuW.qaTAKuI.5F/k..2UfPjQ/.VGaxL4qHKKJNj/GJv3EKgUW', -- "admin123"
+  '$2a$11$SXWTmeJqut5qWbeYWHgAfuaN2N4tHJZ6z2MwUqZG.0DnrBIhFJy2G', -- "admin123"
   'ADMIN'
 );
 

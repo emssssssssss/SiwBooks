@@ -47,6 +47,7 @@ public class AuthConfiguration {
         return provider;
     }
 
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -57,8 +58,8 @@ public class AuthConfiguration {
                                 // Solo ADMIN può accedere a /admin/**
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 
-                // Solo USER o ADMIN possono accedere a /user/**
-                //.requestMatchers("/user/**").hasAnyRole("USER", "ADMIN")
+                // Solo USER o ADMIN possono accedere
+                .requestMatchers("/user/**", "/profilo", "/profilo/**").hasAnyRole("USER", "ADMIN")
 
                 .anyRequest().authenticated()
             )
@@ -71,6 +72,7 @@ public class AuthConfiguration {
                 .defaultSuccessUrl("/", true)
                 .permitAll()
             )
+
             .logout(logout -> logout
                 .logoutUrl("/logout")
                 .logoutSuccessUrl("/home")

@@ -44,25 +44,44 @@
             </div>
         </div>
 
-        <h3>Recensioni</h3>
-        <div th:if="${#lists.isEmpty(libro.recensioni)}">
-            <p><em>Ancora nessuna recensione.</em></p>
+        <div th:if="${#authorization.expression('isAuthenticated()')}">
+            <form th:action="@{/libro/{id}/letto(id=${libro.id})}" method="post" th:if="${!haGiaLetto}">
+                <button type="submit">Segna come letto</button>
+            </form>
+
+            <form th:action="@{/libro/{id}/non-letto(id=${libro.id})}" method="post" th:if="${haGiaLetto}">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                <button type="submit" style="color: red;">Segna come non letto</button>
+            </form>
+
+            <p th:if="${haGiaLetto}" style="color: green;">Hai già letto questo libro.</p>
         </div>
-        <div th:each="rec : ${libro.recensioni}" th:unless="${#lists.isEmpty(libro.recensioni)}" style="border-top:1px solid #ccc; padding-top:10px; margin-top:10px;">
-            <p>
-                <strong>Voto:</strong>
-                <span th:each="i : ${#numbers.sequence(1, 5)}"
-                      th:text="${i <= rec.voto ? '★' : '☆'}"
-                      th:classappend="${i <= rec.voto ? 'piena' : 'vuota'}"
-                      style="color: gold;">★</span>
-                <span th:text="| (${rec.voto} / 5) |"></span>
-            </p>
-            <p><strong>Autore:</strong>
-                <span th:if="${rec.autore != null}" th:text="${rec.autore.nome + ' ' + rec.autore.cognome}">Nome Cognome</span>
-                <em th:if="${rec.autore == null}">Utente anonimo</em>
-            </p>
-            <p th:text="${rec.testo}">Testo recensione</p>
-        </div>
+
+
+            <!-- Tab: Recensioni -->
+            <div id="recensioni" class="tab-content">
+                <div th:if="${#lists.isEmpty(recensioni)}">
+                    <em>Ancora nessuna recensione</em>
+                </div>
+                <div class="reviews-list" th:each="rec : ${recensioni}" th:unless="${#lists.isEmpty(recensioni)}">
+                    <div class="review-card">
+                        <h3 th:text="${rec.titolo}">Titolo recensione</h3>
+                        <p>
+                            <strong>Voto:</strong>
+                            <span th:each="i : ${#numbers.sequence(1,5)}"
+                                  th:text="${i <= rec.voto ? '★' : '☆'}"
+                                  th:classappend="${i <= rec.voto ? 'full' : 'empty'}"
+                                  class="star">★</span>
+                            <span th:text="| (${rec.voto} / 5) |">(0/5)</span>
+                        </p>
+                        <p>
+                            <strong>Autore:</strong>
+                            <em>Utente anonimo</em>
+                        </p>
+                        <p th:text="${rec.testo}">Testo recensione</p>
+                    </div>
+                </div>
+            </div>
 
         <!-- Azioni admin -->
         <div class="azioni-admin" sec:authorize="hasRole('ADMIN')" style="margin-top:20px;">

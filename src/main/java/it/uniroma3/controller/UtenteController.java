@@ -6,14 +6,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 import it.uniroma3.model.Utente;
 import it.uniroma3.service.UtenteService;
 
 
 @Controller
-@RequestMapping("/utenti")
 public class UtenteController {
     @Autowired
     private UtenteService utenteService;
@@ -24,6 +22,6 @@ public class UtenteController {
         Utente utente = utenteService.getUtenteByUsername(userDetails.getUsername()).orElse(null);
         if (utente == null) return "redirect:/login";
         model.addAttribute("utente", utente);
-        return "utenti/profilo";
+        return "profilo";
     }
 }
