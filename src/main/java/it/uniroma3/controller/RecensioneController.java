@@ -68,11 +68,35 @@ public class RecensioneController {
         return "redirect:/libri/" + id;
     }
 
-    // Elimina recensione (solo admin)
+    
     @PostMapping("/{id}/elimina")
     public String eliminaRecensione(@PathVariable Long id,
-                                    @RequestParam("libroId") Long libroId) {
+                                    @RequestParam("libroId") Long libroId,
+                                    @AuthenticationPrincipal UserDetails userDetails) {
+
+        Optional<Recensione> recensioneOpt = recensioneService.findById(id);
+        if (recensioneOpt.isEmpty()) {
+            return "redirect:/libri/" + libroId + "?error=notfound";
+        }
+
+        Recensione recensione = recensioneOpt.get();
+
+        Optional<Utente> utenteOpt = utenteService.getUtenteByUsername(userDetails.getUsername());
+        if (utenteOpt.isEmpty()) {
+            return "redirect:/login";
+        }
+
+        Utente utente = utenteOpt.get();
+
+        // Solo autore o admin possono cancellare
+        if (!recensione.getAutore().getId().equals(utente.getId()) && utente.getRuolo() != Utente.Ruolo.ADMIN) {
+            return "redirect:/libri/" + libroId + "?error=forbidden";
+        }
+
         recensioneService.deleteById(id);
-        return "redirect:/libri/" + libroId;
+
+        return "redirect:/libri/" + libroId + "?success=deleted";
     }
+
+
 }

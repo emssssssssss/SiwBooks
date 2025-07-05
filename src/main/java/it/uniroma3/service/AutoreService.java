@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import it.uniroma3.model.Autore;
+import it.uniroma3.model.Libro;
 import it.uniroma3.repository.AutoreRepository;
 
 @Service
@@ -23,6 +24,13 @@ public class AutoreService {
     }
 
     public Autore save(Autore autore) {
+        if (autore.getLibri() != null) {
+            for (Libro libro : autore.getLibri()) {
+                if (!libro.getAutori().contains(autore)) {
+                    libro.getAutori().add(autore);  
+                }
+            }
+        }
         return autoreRepository.save(autore);
     }
 

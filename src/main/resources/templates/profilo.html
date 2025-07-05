@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Profilo personale</title>
+    <link rel="stylesheet" th:href="@{/css/profilo.css}" />
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <div th:replace="fragments/navbar :: navbar"></div>
+
+    <!-- Contenuto principale -->
+    <div class="main-content">
+
+        <hr>
+
+        <div class="info-utente">
+            <h1>Bentornato "<span th:text="${utente.username}">Username</span>"</h1>
+            <p>Email: <span th:text="${utente.email}">email@example.com</span></p>
+            <p>Ruolo: <span th:text="${utente.ruolo}">USER</span></p>
+        </div>
+
+        <section class="libri-letti">
+            <h2>Libri letti:</h2>
+            <div th:if="${utente.libriLetti != null and !#lists.isEmpty(utente.libriLetti)}">
+                <ul>
+                    <li th:each="libro : ${utente.libriLetti}">
+                        <a th:href="@{/libro/{id}(id=${libro.id})}"
+                           th:text="${libro.titolo}">Titolo libro</a>
+                    </li>
+                </ul>
+            </div>
+            <div th:if="${utente.libriLetti == null or #lists.isEmpty(utente.libriLetti)}">
+                <h3>Non hai letto ancora nessun libro</h3>
+            </div>
+        </section>
+
+        <section class="recensioni">
+            <h2>Le tue recensioni:</h2>
+            <hr>
+            <div th:each="recensione : ${utente.recensioni}">
+                <form class="recensione"
+                      th:action="@{/cancellaRecensione/{id}(id=${recensione.id})}"
+                      method="post">
+                    <div class="contenuto-recensione">
+                        <div class="testo-recensione">
+                            <p>
+                                <a th:href="@{/recensione/modifica/{id}(id=${recensione.id})}"
+                                   th:text="${recensione.titolo}">Titolo Recensione</a>
+                            </p>
+                        </div>
+                        <button type="submit" class="btn-elimina" title="Elimina recensione"></button>
+                    </div>
+                    <hr>
+                </form>
+            </div>
+        </section>
+
+    </div> 
+
+</body>
+</html>

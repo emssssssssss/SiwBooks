@@ -1,0 +1,107 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f9f9f9;
+    padding: 4vh 5vw;
+    max-width: 80vw;
+    margin: auto;
+    color: #333;
+}
+
+h1 {
+    text-align: center;
+    color: #2c3e50;
+    font-size: 3vw;
+    margin-bottom: 3vh;
+}
+
+form {
+    background-color: #ffffff;
+    padding: 3vh 3vw;
+    border-radius: 1vw;
+    box-shadow: 0 0.4vh 1vh rgba(0, 0, 0, 0.1);
+}
+
+label {
+    display: block;
+    margin-top: 2vh;
+    font-weight: bold;
+    font-size: 1.2vw;
+    color: #2c3e50;
+}
+
+input[type="text"],
+input[type="number"],
+textarea {
+    width: 100%;
+    padding: 1vh 1vw;
+    margin-top: 1vh;
+    border: 0.2vh solid #ccc;
+    border-radius: 0.5vw;
+    font-size: 1.1vw;
+    box-sizing: border-box;
+}
+
+textarea {
+    resize: vertical;
+    min-height: 10vh;
+    max-height: 30vh;
+}
+
+div {
+    margin-top: 0.5vh;
+    font-size: 1vw;
+    color: red;
+}
+
+.salvaAnnulla {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 3vh;
+}
+
+button[type="submit"],
+.button-annulla {
+    padding: 1.2vh 2vw;
+    font-size: 1.2vw;
+    border: none;
+    border-radius: 0.6vw;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    text-decoration: none;
+    display: inline-block;
+}
+
+button[type="submit"] {
+    background-color: #3498db;
+    color: white;
+}
+
+button[type="submit"]:hover {
+    background-color: #2980b9;
+}
+
+.button-annulla {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.button-annulla:hover {
+    background-color: #c0392b;
+}
+
+form button {
+    margin-top: 3vh;
+    background-color: #e74c3c;
+    color: white;
+    padding: 1.2vh 2vw;
+    font-size: 1.2vw;
+    border: none;
+    border-radius: 0.6vw;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+form button:hover {
+    background-color: #c0392b;
+}

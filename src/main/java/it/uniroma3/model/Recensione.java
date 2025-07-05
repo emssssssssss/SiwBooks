@@ -11,12 +11,12 @@ import jakarta.persistence.ManyToOne;
 public class Recensione {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     private String titolo;
 
-    private int voto; // 1-5
+    private int voto; 
    
 
     @Lob  //Large Object, annotazione per mappare campi che possono contenere grandi quantità di dati

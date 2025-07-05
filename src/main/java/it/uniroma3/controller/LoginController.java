@@ -1,6 +1,7 @@
 package it.uniroma3.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -67,7 +68,6 @@ public class LoginController {
     }
 
 
-
     @PostMapping("/registrazione")
     public String registrazione(@RequestParam String email,
                                 @RequestParam String username,
@@ -77,11 +77,28 @@ public class LoginController {
                                 Model model,
                                 HttpServletRequest request) {
 
+        // Verifica coerenza password
         if (!password.equals(passwordBis)) {
             model.addAttribute("errore", "Le password non coincidono");
+            model.addAttribute("utente", new Utente());
             return "registrazione";
         }
 
+        // Controllo unicità username
+        if (utenteService.getUtenteByUsername(username).isPresent()) {
+            model.addAttribute("errore", "Username già in uso");
+            model.addAttribute("utente", new Utente());
+            return "registrazione";
+        }
+
+        // Controllo unicità email
+        if (utenteService.getUtenteByEmail(email).isPresent()) {
+            model.addAttribute("errore", "Email già in uso");
+            model.addAttribute("utente", new Utente());
+            return "registrazione";
+        }
+
+        // Crea utente e imposta ruolo
         Utente utente = new Utente();
         utente.setEmail(email);
         utente.setUsername(username);
@@ -92,12 +109,18 @@ public class LoginController {
 
         try {
             utenteService.addUtente(utente);
+        } catch (DataIntegrityViolationException e) {
+            // In caso di vincolo di unicità in DB
+            model.addAttribute("errore", "Username o email già in uso");
+            model.addAttribute("utente", new Utente());
+            return "registrazione";
         } catch (Exception e) {
             model.addAttribute("errore", "Errore durante la registrazione: " + e.getMessage());
+            model.addAttribute("utente", new Utente());
             return "registrazione";
         }
 
-        // Auto-login
+        // Auto‑login
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         UsernamePasswordAuthenticationToken authToken =
             new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
@@ -105,9 +128,10 @@ public class LoginController {
 
         HttpSession session = request.getSession(true);
         session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
-                             SecurityContextHolder.getContext());
+                            SecurityContextHolder.getContext());
 
         return "redirect:/home";
     }
+
     
 }
