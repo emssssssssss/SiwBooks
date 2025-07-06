@@ -2,9 +2,12 @@ package it.uniroma3.controller;
 
 import java.security.Principal;
 //import java.util.Optional;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,10 +18,11 @@ import org.springframework.web.server.ResponseStatusException;
 import it.uniroma3.model.Libro;
 import it.uniroma3.model.Recensione;
 import it.uniroma3.model.Utente;
+import it.uniroma3.model.Utente.Ruolo;
 import it.uniroma3.repository.LibroRepository;
 import it.uniroma3.repository.UtenteRepository;
 import it.uniroma3.service.RecensioneService;
-
+import it.uniroma3.service.UtenteService;
 import jakarta.validation.Valid;
 
 @Controller
@@ -33,6 +37,9 @@ public class RecensioneController {
 
     @Autowired
     private LibroRepository libroRepository;
+
+    @Autowired
+    private UtenteService utenteService;
 
     @PostMapping("/{id}/recensisci")
     public String inserisciRecensione(@PathVariable Long id,
@@ -79,14 +86,60 @@ public class RecensioneController {
         return "redirect:/libro/" + id;
     }
 
-    // POST /libro/{id}/elimina (se necessario)
-    @PostMapping("/{id}/elimina")
-    public String eliminaRecensione(
-            @PathVariable Long id,
-            @RequestParam("libroId") Long libroId,
-            Principal principal) {
+    @PostMapping("/{libroId}/recensione/modifica/{id}")
+    public String modificaRecensione(@PathVariable Long libroId, @PathVariable Long id,
+            @Valid @ModelAttribute Recensione recensioneModificata,
+            BindingResult bindingResult,
+            @AuthenticationPrincipal UserDetails userDetails,
+            Model model) {
 
-        // se non serve, commenta o rimuovi questo metodo
+        Optional<Recensione> recOpt = recensioneService.findById(id);
+        if (recOpt.isEmpty()) {
+            return "redirect:/libro/" + libroId + "?error=RecensioneNonTrovata";
+        }
+
+        Recensione rec = recOpt.get();
+
+        Optional<Utente> utenteOpt = utenteService.getUtenteByUsername(userDetails.getUsername());
+        if (utenteOpt.isEmpty() || !rec.getUtente().getId().equals(utenteOpt.get().getId())) {
+            return "redirect:/libro/" + libroId + "?error=NonAutorizzato";
+        }
+
+        if (bindingResult.hasErrors()) {
+            return "redirect:/libro/" + libroId + "?error=ValidazioneFallita";
+        }
+
+        recensioneModificata.setId(id); // essenziale per l'update
+        recensioneService.update(recensioneModificata);
+
         return "redirect:/libro/" + libroId;
     }
+
+
+
+    @PostMapping("/{libroId}/recensione/elimina/{id}")
+    public String eliminaRecensione(@PathVariable Long libroId, @PathVariable Long id,
+                                    @AuthenticationPrincipal UserDetails userDetails) {
+        Optional<Recensione> recOpt = recensioneService.findById(id);
+        if (recOpt.isEmpty()) {
+            return "redirect:/libro/" + libroId + "?error=RecensioneNonTrovata";
+        }
+        Recensione rec = recOpt.get();
+
+        Optional<Utente> utenteOpt = utenteService.getUtenteByUsername(userDetails.getUsername());
+        if (utenteOpt.isEmpty()) {
+            return "redirect:/libro/" + libroId + "?error=NonAutorizzato";
+        }
+        Utente utente = utenteOpt.get();
+
+        if (!rec.getUtente().getId().equals(utente.getId()) && utente.getRuolo() != Ruolo.ADMIN) {
+            return "redirect:/libro/" + libroId + "?error=NonAutorizzato";
+        }
+
+        recensioneService.deleteById(id);
+
+        return "redirect:/libro/" + libroId;
+    }
+
+
 }
