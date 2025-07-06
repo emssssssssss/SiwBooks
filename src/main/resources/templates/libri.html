@@ -41,7 +41,7 @@
 
         <!-- Pulsante visibile solo all'admin -->
         <div class="aggiungi-libro-container" sec:authorize="hasRole('ADMIN')">
-            <a th:href="@{/libri/admin/nuovo}">
+            <a th:href="@{/admin/libro/nuovo}">
                 <button class="btn-aggiungi-libro">Aggiungi Nuovo Libro</button>
             </a>
         </div>
