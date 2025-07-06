@@ -15,6 +15,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,6 +31,7 @@ import it.uniroma3.model.Utente;
 import it.uniroma3.service.AutoreService;
 import it.uniroma3.service.LibroService;
 import it.uniroma3.service.UtenteService;
+import jakarta.validation.Valid;
 ;
 
 @Controller
@@ -204,8 +206,6 @@ public class LibroController {
     }
 
 
-
-
     // Eliminazione (solo admin) — opzionale
     @PostMapping("/admin/libro/{id}/elimina")
     public String eliminaLibro(@PathVariable Long id) {
@@ -217,7 +217,6 @@ public class LibroController {
     public String getMethodName(@RequestParam String param) {
         return new String();
     }
-    
 
     @GetMapping("/admin/libro/modifica/{id}")
     public String mostraFormModificaLibro(@PathVariable Long id, Model model) {
@@ -228,14 +227,16 @@ public class LibroController {
 
         model.addAttribute("libro", libroOpt.get());
         model.addAttribute("autori", autoreService.findAll());
-        return "formLibro";
+        return "formModificaLibro";
     }
 
     @PostMapping("/admin/libro/modifica/{id}")
     public String modificaLibro(@PathVariable Long id,
-                                @ModelAttribute Libro libro,
-                                @RequestParam("immaginiFiles") List<MultipartFile> immaginiFiles,
-                                @RequestParam("autori") List<Long> autoriIds) {
+                                @Valid @ModelAttribute Libro libro,
+                                BindingResult bindingResult,
+                                @RequestParam("copertinaFile") MultipartFile copertinaFile,
+                                @RequestParam("autori") List<Long> autoriIds,
+                                Model model) {
 
         Optional<Libro> libroEsistenteOpt = libroService.findById(id);
         if (libroEsistenteOpt.isEmpty()) {
@@ -243,33 +244,29 @@ public class LibroController {
         }
 
         Libro libroEsistente = libroEsistenteOpt.get();
-        libro.setId(id); // Mantieni ID
-
+        libro.setId(id);
         libro.setAutori(autoreService.findAllById(autoriIds));
+        // Mantieni URL copertina esistente, se non ne viene caricata una nuova
+        String urlEsistente = libroEsistente.getUrlCopertina();
 
         try {
             Path uploadDir = Paths.get(props.getUploadDir());
             Files.createDirectories(uploadDir);
 
-            // Mantieni immagini esistenti
-            List<String> nuoveImmagini = new ArrayList<>(libroEsistente.getImmagini());
-
-            for (MultipartFile file : immaginiFiles) {
-                if (!file.isEmpty()) {
-                    String originalFilename = file.getOriginalFilename();
-                    String sanitizedFilename = (originalFilename != null) ? originalFilename.replaceAll("\\s+", "_") : "image";
-                    String filename = UUID.randomUUID() + "_" + sanitizedFilename;
-
-                    Path filePath = uploadDir.resolve(filename);
-                    file.transferTo(filePath.toFile());
-
-                    nuoveImmagini.add("/uploads/images/" + filename);
-                }
+            if (copertinaFile != null && !copertinaFile.isEmpty()) {
+                String originalFilename = copertinaFile.getOriginalFilename();
+                String sanitizedFilename = (originalFilename != null)
+                    ? originalFilename.replaceAll("\\s+", "_") 
+                    : "cover";
+                String filename = UUID.randomUUID() + "_" + sanitizedFilename;
+                Path filePath = uploadDir.resolve(filename);
+                copertinaFile.transferTo(filePath.toFile());
+                libro.setUrlCopertina("/uploads/images/" + filename);
+            } else {
+                libro.setUrlCopertina(urlEsistente);
             }
 
-            libro.setImmagini(nuoveImmagini);
             libroService.save(libro);
-
         } catch (Exception e) {
             e.printStackTrace();
             return "redirect:/admin/libro/modifica/" + id + "?error=upload";
@@ -277,6 +274,7 @@ public class LibroController {
 
         return "redirect:/libro/" + id;
     }
+
 
 
     

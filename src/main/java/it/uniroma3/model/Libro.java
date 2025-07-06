@@ -1,6 +1,7 @@
 package it.uniroma3.model;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
@@ -118,6 +119,17 @@ public class Libro {
 
     public String getUrlCopertina() {
         return (this.immagini != null && !this.immagini.isEmpty()) ? this.immagini.get(0) : "/images/default-cover.jpg";
+    }
+
+        public void setUrlCopertina(String url) {
+        if (this.immagini == null) {
+            this.immagini = new ArrayList<>();
+        }
+        if (this.immagini.isEmpty()) {
+            this.immagini.add(url);
+        } else {
+            this.immagini.set(0, url);
+        }
     }
 
     public List<String> getImmagini() {

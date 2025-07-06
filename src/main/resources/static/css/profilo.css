@@ -141,3 +141,7 @@ nav button {
 .btn-modifica:hover {
     opacity: 0.9;
 }
+
+body {
+  font-family: 'Arial', sans-serif;
+}
