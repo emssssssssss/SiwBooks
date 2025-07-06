@@ -218,4 +218,66 @@ public class LibroController {
         return new String();
     }
     
+
+    @GetMapping("/admin/libro/modifica/{id}")
+    public String mostraFormModificaLibro(@PathVariable Long id, Model model) {
+        Optional<Libro> libroOpt = libroService.findByIdWithAutori(id);
+        if (libroOpt.isEmpty()) {
+            return "redirect:/libri";
+        }
+
+        model.addAttribute("libro", libroOpt.get());
+        model.addAttribute("autori", autoreService.findAll());
+        return "formLibro";
+    }
+
+    @PostMapping("/admin/libro/modifica/{id}")
+    public String modificaLibro(@PathVariable Long id,
+                                @ModelAttribute Libro libro,
+                                @RequestParam("immaginiFiles") List<MultipartFile> immaginiFiles,
+                                @RequestParam("autori") List<Long> autoriIds) {
+
+        Optional<Libro> libroEsistenteOpt = libroService.findById(id);
+        if (libroEsistenteOpt.isEmpty()) {
+            return "redirect:/libri";
+        }
+
+        Libro libroEsistente = libroEsistenteOpt.get();
+        libro.setId(id); // Mantieni ID
+
+        libro.setAutori(autoreService.findAllById(autoriIds));
+
+        try {
+            Path uploadDir = Paths.get(props.getUploadDir());
+            Files.createDirectories(uploadDir);
+
+            // Mantieni immagini esistenti
+            List<String> nuoveImmagini = new ArrayList<>(libroEsistente.getImmagini());
+
+            for (MultipartFile file : immaginiFiles) {
+                if (!file.isEmpty()) {
+                    String originalFilename = file.getOriginalFilename();
+                    String sanitizedFilename = (originalFilename != null) ? originalFilename.replaceAll("\\s+", "_") : "image";
+                    String filename = UUID.randomUUID() + "_" + sanitizedFilename;
+
+                    Path filePath = uploadDir.resolve(filename);
+                    file.transferTo(filePath.toFile());
+
+                    nuoveImmagini.add("/uploads/images/" + filename);
+                }
+            }
+
+            libro.setImmagini(nuoveImmagini);
+            libroService.save(libro);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "redirect:/admin/libro/modifica/" + id + "?error=upload";
+        }
+
+        return "redirect:/libro/" + id;
+    }
+
+
+    
 }

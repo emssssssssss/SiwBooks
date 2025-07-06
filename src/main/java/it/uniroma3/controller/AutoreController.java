@@ -136,6 +136,70 @@ public class AutoreController {
     }
 
 
+    @GetMapping("/autori/admin/modifica/{id}")
+    public String modificaAutoreForm(@PathVariable Long id, Model model) {
+        Optional<Autore> autoreOpt = autoreService.findById(id);
+        if (autoreOpt.isPresent()) {
+            model.addAttribute("autore", autoreOpt.get());
+            return "formAutore";
+        } else {
+            return "redirect:/autori";
+        }
+    }
+
+    @PostMapping("/admin/autori/modifica/{id}")
+    public String modificaAutore(
+            @PathVariable Long id,
+            @Valid Autore autore,
+            BindingResult bindingResult,
+            @RequestParam("fotoFile") MultipartFile fotoFile,
+            Model model) {
+
+        if (bindingResult.hasErrors()) {
+            return "formAutore";
+        }
+
+        Optional<Autore> esistente = autoreService.findById(id);
+        if (esistente.isEmpty()) {
+            return "redirect:/autori";
+        }
+
+        Autore vecchio = esistente.get();
+
+        // Imposta manualmente l'ID per assicurarsi che stiamo modificando l'esistente
+        autore.setId(id);
+
+        // Mantiene la foto esistente se non ne viene caricata una nuova
+        if (!fotoFile.isEmpty()) {
+            try {
+                Path uploadDir = Paths.get(props.getUploadDir());
+                Files.createDirectories(uploadDir);
+                String originalFilename = fotoFile.getOriginalFilename();
+                String sanitizedFilename = (originalFilename != null) ? originalFilename.replaceAll("\\s+", "_") : "image";
+                String filename = UUID.randomUUID() + "_" + sanitizedFilename;
+                Path filePath = uploadDir.resolve(filename);
+                fotoFile.transferTo(filePath.toFile());
+
+                // elimina vecchia foto
+                String oldFotoUrl = vecchio.getFotoUrl();
+                if (oldFotoUrl != null) {
+                    Path oldFile = Paths.get(props.getUploadDir(), oldFotoUrl.replace("/uploads/images/", ""));
+                    Files.deleteIfExists(oldFile);
+                }
+
+                autore.setFotoUrl("/uploads/images/" + filename);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return "redirect:/autori/admin/modifica/" + id + "?error=upload";
+            }
+        } else {
+            autore.setFotoUrl(vecchio.getFotoUrl());
+        }
+
+        autoreService.save(autore);
+        return "redirect:/autori/" + autore.getId();
+    }
+
 
 
 
