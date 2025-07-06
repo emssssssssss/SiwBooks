@@ -51,4 +51,17 @@ public class RecensioneService {
         return recensioneRepository.existsByLibroIdAndUtenteId(id, id2);
     }
 
+    @Transactional
+    public Recensione update(Recensione nuovaRecensione) {
+        Recensione recensioneDB = recensioneRepository.findById(nuovaRecensione.getId())
+                .orElseThrow(() -> new EntityNotFoundException("Recensione non trovata"));
+
+        recensioneDB.setTesto(nuovaRecensione.getTesto());
+        recensioneDB.setTitolo(nuovaRecensione.getTitolo());
+        recensioneDB.setVoto(nuovaRecensione.getVoto());
+
+        return recensioneRepository.save(recensioneDB);
+    }
+
+
 }
