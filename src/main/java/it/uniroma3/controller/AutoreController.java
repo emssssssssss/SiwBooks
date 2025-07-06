@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-
+import it.uniroma3.authentication.AppProperties;
 import it.uniroma3.model.Autore;
 import it.uniroma3.service.AutoreService;
 import jakarta.validation.Valid;
@@ -30,6 +30,9 @@ public class AutoreController {
 
     @Autowired
     private AutoreService autoreService;
+
+    @Autowired
+    private AppProperties props;
 
     @GetMapping("/autori")
     public String elencoAutori(Model model) {
@@ -61,36 +64,51 @@ public class AutoreController {
         @RequestParam("fotoFile") MultipartFile fotoFile,
         Model model
     ) {
+        // Se ci sono errori di validazione, torna al form
         if (bindingResult.hasErrors()) {
             return "formAutore";
         }
 
+        // Assicura che l'autore abbia un ID nullo per creare un nuovo record
         autore.setId(null);
 
+        // Se è stata caricata una foto
         if (!fotoFile.isEmpty()) {
             try {
-                // Percorso assoluto alla cartella /static/images/autori
-                Path staticImagesPath = Paths.get(System.getProperty("user.dir"),
-                                                "src", "main", "resources", "static", "images", "autori");
+                // Directory di upload da application.properties
+                Path uploadDir = Paths.get(props.getUploadDir());
+                Files.createDirectories(uploadDir); // crea se non esiste
 
-                Files.createDirectories(staticImagesPath);
+                // Crea un nome file unico e sicuro
+                String originalFilename = fotoFile.getOriginalFilename();
+                String sanitizedFilename = (originalFilename != null) 
+                    ? originalFilename.replaceAll("\\s+", "_") 
+                    : "image";
+                String filename = UUID.randomUUID() + "_" + sanitizedFilename;
 
-                String filename = UUID.randomUUID() + "_" + fotoFile.getOriginalFilename().replaceAll("\\s+", "_");
-                Path filePath = staticImagesPath.resolve(filename);
+                Path filePath = uploadDir.resolve(filename);
+
+                // Salva il file fisicamente nel filesystem
                 fotoFile.transferTo(filePath.toFile());
 
-                // URL per visualizzarla nel browser
-                autore.setFotoUrl("/images/autori/" + filename);
+                // Imposta l'URL della foto per l'autore
+                autore.setFotoUrl("/uploads/images/" + filename);
 
             } catch (IOException ex) {
                 ex.printStackTrace();
+                // Redireziona al form con messaggio di errore
                 return "redirect:/autori/admin/nuovo?error=uploadFail";
             }
         }
 
+        // Salva l'autore nel database
         autoreService.save(autore);
+
+        // Reindirizza alla pagina dell'autore appena creato
         return "redirect:/autori/" + autore.getId();
     }
+
+
 
 
 }
