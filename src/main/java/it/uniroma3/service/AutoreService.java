@@ -19,6 +19,10 @@ public class AutoreService {
         return autoreRepository.findAll();
     }
 
+    public List<Autore> findAllById(List<Long> ids) {
+        return autoreRepository.findAllById(ids);
+    }
+
     public Optional<Autore> findById(Long id) {
         return autoreRepository.findById(id);
     }

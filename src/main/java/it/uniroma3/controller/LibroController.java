@@ -1,6 +1,6 @@
 package it.uniroma3.controller;
 
-import java.io.File;
+//import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.Path;
@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 //import java.util.Objects;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -21,6 +22,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import it.uniroma3.authentication.AppProperties;
+import it.uniroma3.model.Autore;
 import it.uniroma3.model.Libro;
 import it.uniroma3.model.Recensione;
 import it.uniroma3.model.Utente;
@@ -39,6 +42,9 @@ public class LibroController {
 
     @Autowired
     private AutoreService autoreService;
+
+    @Autowired
+    private AppProperties props;
 
     // Mostra elenco libri
     @GetMapping("/libri")
@@ -112,9 +118,47 @@ public class LibroController {
         return "libro";
     }
 
+    @PostMapping("/admin/libro/nuovo")
+    public String salvaLibro(@ModelAttribute Libro libro,
+                            @RequestParam("immaginiFiles") List<MultipartFile> immaginiFiles,
+                            @RequestParam("autori") List<Long> autoriIds) {
+        try {
+            // Recupera gli Autori dal DB e li assegna al libro
+            List<Autore> autoriSelezionati = autoreService.findAllById(autoriIds);
+            libro.setAutori(autoriSelezionati);
 
+            Path uploadDir = Paths.get(props.getUploadDir());
+            Files.createDirectories(uploadDir); // crea la cartella se non esiste
 
+            if (libro.getImmagini() == null) {
+                libro.setImmagini(new ArrayList<>());
+            }
 
+            for (MultipartFile file : immaginiFiles) {
+                if (!file.isEmpty()) {
+                    String originalFilename = file.getOriginalFilename();
+                    String sanitizedFilename = (originalFilename != null)
+                        ? originalFilename.replaceAll("\\s+", "_")
+                        : "image";
+                    String filename = UUID.randomUUID() + "_" + sanitizedFilename;
+
+                    Path filePath = uploadDir.resolve(filename);
+                    file.transferTo(filePath.toFile());
+
+                    // Aggiungi URL accessibile nel modello Libro
+                    libro.getImmagini().add("/uploads/images/" + filename);
+                }
+            }
+
+            libroService.save(libro);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "redirect:/admin/libro/nuovo?error=uploadFallito";
+        }
+
+        return "redirect:/libri";
+    }
 
     @PostMapping("/libro/{id}/letto")
     public String segnaComeLetto(@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails) {
@@ -151,7 +195,7 @@ public class LibroController {
 
 
     // Aggiunta (solo admin) — opzionale
-    @GetMapping("/admin/nuovo")
+    @GetMapping("/admin/libro/nuovo")
     public String mostraFormLibro(Model model) {
         model.addAttribute("libro", new Libro());
         model.addAttribute("autori", autoreService.findAll());
@@ -159,34 +203,11 @@ public class LibroController {
         return "formLibro";
     }
 
-    @PostMapping("/admin/nuovo")
-    public String salvaLibro(@ModelAttribute Libro libro,
-                            @RequestParam("copertinaFile") MultipartFile copertinaFile) {
-        try {
-            if (!copertinaFile.isEmpty()) {
-                String folder = "src/main/resources/static/images";
-                byte[] bytes = copertinaFile.getBytes();
-                Path path = Paths.get(folder + File.separator + copertinaFile.getOriginalFilename());
 
-                Files.write(path, bytes);
 
-                // Controlla se la lista immagini è null, crea nuova
-                if (libro.getImmagini() == null) {
-                    libro.setImmagini(new ArrayList<>());
-                }
-                // Aggiungi la nuova immagine (path relativo)
-                libro.getImmagini().add("/images" + copertinaFile.getOriginalFilename());
-            }
-            libroService.save(libro);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "redirect:/admin/nuovo?error=uploadFallito";
-        }
-        return "redirect:/libri";
-    }
 
     // Eliminazione (solo admin) — opzionale
-    @PostMapping("/{id}/admin/elimina")
+    @PostMapping("/admin/libro/{id}/elimina")
     public String eliminaLibro(@PathVariable Long id) {
         libroService.deleteById(id);
         return "redirect:/libri";

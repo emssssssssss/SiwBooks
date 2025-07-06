@@ -109,6 +109,34 @@ public class AutoreController {
     }
 
 
+    @PostMapping("/admin/autore/elimina/{id}")
+    public String eliminaAutore(@PathVariable Long id) {
+        Optional<Autore> autoreOpt = autoreService.findById(id);
+
+        if (autoreOpt.isPresent()) {
+            Autore autore = autoreOpt.get();
+
+            // Elimina fisicamente l'immagine se presente
+            String fotoUrl = autore.getFotoUrl();
+            if (fotoUrl != null && !fotoUrl.isEmpty()) {
+                try {
+                    // Rimuove il prefisso "/uploads/images/" dall'URL
+                    String fileName = fotoUrl.replace("/uploads/images/", "");
+                    Path filePath = Paths.get(props.getUploadDir(), fileName);
+                    Files.deleteIfExists(filePath);
+                } catch (IOException e) {
+                    e.printStackTrace(); // Logga l'errore ma continua comunque
+                }
+            }
+
+            autoreService.deleteById(id);
+        }
+
+        return "redirect:/autori";
+    }
+
+
+
 
 
 }
