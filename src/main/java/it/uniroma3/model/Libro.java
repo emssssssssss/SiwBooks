@@ -2,7 +2,12 @@ package it.uniroma3.model;
 
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.ElementCollection;
@@ -40,21 +45,33 @@ public class Libro {
     private List<String> immagini;
 
 
+    //@ManyToMany(cascade = { CascadeType.ALL })
+    //@JoinTable(
+    //name = "autore_libri", // <-- Nome esplicito della tabella di join
+    //joinColumns = @JoinColumn(name = "libro_id"),
+    //inverseJoinColumns = @JoinColumn(name = "autore_id"))
+    //@Fetch(FetchMode.SUBSELECT)
+    //private List<Autore> autori;
+
     @ManyToMany(cascade = { CascadeType.ALL })
     @JoinTable(
-    name = "autore_libri", // <-- Nome esplicito della tabella di join
-    joinColumns = @JoinColumn(name = "libro_id"),
-    inverseJoinColumns = @JoinColumn(name = "autore_id"))
-    private List<Autore> autori;
+      name = "autore_libri",
+      joinColumns = @JoinColumn(name = "libro_id"),
+      inverseJoinColumns = @JoinColumn(name = "autore_id")
+    )
+    private Set<Autore> autori = new HashSet<>();
     
 
     @OneToMany(mappedBy = "libro", cascade = CascadeType.ALL)
     private List<Recensione> recensioni;
 
+    //@ManyToMany(mappedBy = "libriLetti")
+    //@Fetch(FetchMode.SUBSELECT)
+    //private List<Utente> lettori;
+
     @ManyToMany(mappedBy = "libriLetti")
-    private List<Utente> lettori;
-
-
+    @Fetch(FetchMode.SUBSELECT)
+    private List<Utente> lettori = new ArrayList<>();
 
 
 
@@ -82,11 +99,11 @@ public class Libro {
         this.annoPubblicazione = annoPubblicazione;
     }
     
-    public List<Autore> getAutori() {
+    public Set<Autore> getAutori() {
         return autori;
     }
 
-    public void setAutori(List<Autore> autori) {
+    public void setAutori(Set<Autore> autori) {
         this.autori = autori;
     }
     

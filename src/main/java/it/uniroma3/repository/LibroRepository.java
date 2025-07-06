@@ -37,4 +37,12 @@ public interface LibroRepository extends JpaRepository<Libro, Long>{
     """)
     int deleteByAutore(@Param("autore") Autore autore);
 
+    @Query("""
+      select l from Libro l
+      left join fetch l.autori
+      left join fetch l.lettori
+      where l.id = :id
+    """)
+    Optional<Libro> findByIdWithAutoriAndLettori(Long id);
+
 }

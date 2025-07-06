@@ -5,8 +5,10 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 //import java.util.Objects;
 import java.util.UUID;
 
@@ -125,17 +127,20 @@ public class LibroController {
                             @RequestParam("immaginiFiles") List<MultipartFile> immaginiFiles,
                             @RequestParam("autori") List<Long> autoriIds) {
         try {
-            // Recupera gli Autori dal DB e li assegna al libro
-            List<Autore> autoriSelezionati = autoreService.findAllById(autoriIds);
+            // 1) Recupera gli Autori e costruisci un Set
+            Set<Autore> autoriSelezionati = new HashSet<>(autoreService.findAllById(autoriIds));
             libro.setAutori(autoriSelezionati);
 
+            // 2) Prepara la directory di upload
             Path uploadDir = Paths.get(props.getUploadDir());
-            Files.createDirectories(uploadDir); // crea la cartella se non esiste
+            Files.createDirectories(uploadDir);
 
+            // 3) Inizializza la lista di immagini, se serve
             if (libro.getImmagini() == null) {
                 libro.setImmagini(new ArrayList<>());
             }
 
+            // 4) Salva ciascun file e aggiungi l’URL
             for (MultipartFile file : immaginiFiles) {
                 if (!file.isEmpty()) {
                     String originalFilename = file.getOriginalFilename();
@@ -143,15 +148,13 @@ public class LibroController {
                         ? originalFilename.replaceAll("\\s+", "_")
                         : "image";
                     String filename = UUID.randomUUID() + "_" + sanitizedFilename;
-
                     Path filePath = uploadDir.resolve(filename);
                     file.transferTo(filePath.toFile());
-
-                    // Aggiungi URL accessibile nel modello Libro
                     libro.getImmagini().add("/uploads/images/" + filename);
                 }
             }
 
+            // 5) Salva il libro (con Set<Autore>)
             libroService.save(libro);
 
         } catch (Exception e) {
@@ -161,6 +164,7 @@ public class LibroController {
 
         return "redirect:/libri";
     }
+
 
     @PostMapping("/libro/{id}/letto")
     public String segnaComeLetto(@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails) {
@@ -209,7 +213,7 @@ public class LibroController {
     // Eliminazione (solo admin) — opzionale
     @PostMapping("/admin/libro/{id}/elimina")
     public String eliminaLibro(@PathVariable Long id) {
-        libroService.deleteById(id);
+        libroService.deleteLibroAndCleanup(id);
         return "redirect:/libri";
     }
 
@@ -229,7 +233,6 @@ public class LibroController {
         model.addAttribute("autori", autoreService.findAll());
         return "formModificaLibro";
     }
-
     @PostMapping("/admin/libro/modifica/{id}")
     public String modificaLibro(@PathVariable Long id,
                                 @Valid @ModelAttribute Libro libro,
@@ -245,8 +248,12 @@ public class LibroController {
 
         Libro libroEsistente = libroEsistenteOpt.get();
         libro.setId(id);
-        libro.setAutori(autoreService.findAllById(autoriIds));
-        // Mantieni URL copertina esistente, se non ne viene caricata una nuova
+
+        // Imposta gli autori come Set, non List
+        Set<Autore> autoriSelezionati = new HashSet<>(autoreService.findAllById(autoriIds));
+        libro.setAutori(autoriSelezionati);
+
+        // Mantieni URL copertina esistente se non ne carichi una nuova
         String urlEsistente = libroEsistente.getUrlCopertina();
 
         try {
