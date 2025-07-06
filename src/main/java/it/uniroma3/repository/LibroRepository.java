@@ -1,11 +1,13 @@
 package it.uniroma3.repository;
 
+import it.uniroma3.model.Autore;
 import it.uniroma3.model.Libro;
 
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -27,5 +29,12 @@ public interface LibroRepository extends JpaRepository<Libro, Long>{
 
     @Query("SELECT l FROM Libro l LEFT JOIN FETCH l.autori WHERE l.id = :id")
     Optional<Libro> findByIdWithAutori(@Param("id") Long id);
+
+    @Modifying
+    @Query("""
+       delete from Libro l
+        where :autore member of l.autori
+    """)
+    int deleteByAutore(@Param("autore") Autore autore);
 
 }

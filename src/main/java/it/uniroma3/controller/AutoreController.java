@@ -129,8 +129,9 @@ public class AutoreController {
                 }
             }
 
-            autoreService.deleteById(id);
+            autoreService.deleteAutoreAndLibri(id);
         }
+
 
         return "redirect:/autori";
     }
