@@ -186,7 +186,7 @@
 
       <!-- Azioni Admin sul libro -->
       <div class="azioni-admin" sec:authorize="hasRole('ADMIN')" style="margin-top:20px;">
-        <a th:href="@{/libri/modifica/{id}(id=${libro.id})}" class="btn-modifica">Modifica Libro</a>
+        <a th:href="@{/admin/libro/modifica/{id}(id=${libro.id})}" class="btn-modifica">Modifica Libro</a>
         |
         <form th:action="@{/admin/libro/{id}/elimina(id=${libro.id})}" method="post" style="display:inline;"
               onsubmit="return confirm('Eliminare questo libro?');">

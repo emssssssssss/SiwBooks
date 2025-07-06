@@ -2,16 +2,21 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="it" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8" />
-    <title>Aggiungi Nuovo Libro</title>
+    <title th:text="${libro.id} != null ? 'Modifica Libro' : 'Aggiungi Nuovo Libro'">Gestione Libro</title>
     <link rel="stylesheet" th:href="@{/css/formLibro.css}" />
 </head>
 <body>
 
+    <h1 th:text="${libro.id} != null ? 'Modifica Libro' : 'Aggiungi Nuovo Libro'">Gestione Libro</h1>
 
-    <h1>Aggiungi Nuovo Libro</h1>
+    <form th:action="${libro.id} != null ? @{/admin/libro/modifica/{id}(id=${libro.id})} : @{/admin/libro/nuovo}" 
+          th:object="${libro}" 
+          method="post" 
+          enctype="multipart/form-data">
 
-    <form th:action="@{/admin/libro/nuovo}" th:object="${libro}" method="post" enctype="multipart/form-data">
-        
+        <!-- Campo nascosto per l'ID (necessario per la modifica) -->
+        <input type="hidden" th:if="${libro.id != null}" th:field="*{id}" />
+
         <div>
             <label for="titolo">Titolo:</label>
             <input type="text" id="titolo" th:field="*{titolo}" required />
@@ -46,13 +51,14 @@
             <select id="autori" name="autori" multiple required>
                 <option th:each="autore : ${autori}" 
                         th:value="${autore.id}" 
-                        th:text="${autore.nome} + ' ' + ${autore.cognome}">
+                        th:text="${autore.nome} + ' ' + ${autore.cognome}" 
+                        th:selected="${libro.autori.contains(autore)}">
                 </option>
             </select>
         </div>
 
         <div>
-            <button type="submit">Salva Libro</button>
+            <button type="submit" th:text="${libro.id} != null ? 'Aggiorna Libro' : 'Salva Libro'">Salva Libro</button>
         </div>
     </form>
 

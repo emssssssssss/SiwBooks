@@ -52,7 +52,7 @@
 
     <!-- Azioni riservate a STAFF o ADMIN -->
     <div class="azioni-admin" sec:authorize="hasRole('ADMIN') or hasRole('STAFF')">
-      <a th:href="@{/admin/autore/edit/{id}(id=${autore.id})}" class="btn-modifica">Modifica</a>
+      <a th:href="@{/autori/admin/modifica/{id}(id=${autore.id})}" class="btn-modifica">Modifica</a>
       <form th:action="@{/admin/autore/elimina/{id}(id=${autore.id})}" method="post" style="display:inline;" onsubmit="return confirm('Eliminare questo libro?');">
         <button type="submit" class="btn-elimina">Elimina</button>
       </form>

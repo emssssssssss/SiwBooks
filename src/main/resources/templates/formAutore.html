@@ -1,47 +1,55 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
-      lang="it">
+<html xmlns:th="http://www.thymeleaf.org" lang="it"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
   <meta charset="UTF-8"/>
-  <title>Nuovo Autore</title>
+  <title th:text="${autore.id != null ? 'Modifica Autore' : 'Nuovo Autore'}">Autore</title>
   <link rel="stylesheet" th:href="@{/css/formAutore.css}"/>
 </head>
 <body>
 
+<div class="form-container">
+  <h1 th:text="${autore.id != null ? 'Modifica Autore' : 'Aggiungi Autore'}">Form Autore</h1>
 
-  <div class="form-container">
-    <h1>Aggiungi Autore</h1>
-    <form th:action="@{/autori/admin/salva}"
-          th:object="${autore}"
-          method="post"
-          enctype="multipart/form-data">
-      <!-- CSRF token -->
-      <input type="hidden"
-             th:name="${_csrf.parameterName}"
-             th:value="${_csrf.token}"/>
+  <form th:action="${autore.id != null} ? @{/admin/autori/modifica/{id}(id=${autore.id})} : @{/autori/admin/salva}"
+        th:object="${autore}"
+        method="post"
+        enctype="multipart/form-data">
 
-      <label for="nome">Nome:</label>
-      <input id="nome" type="text" th:field="*{nome}" required/>
+    <!-- CSRF -->
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 
-      <label for="cognome">Cognome:</label>
-      <input id="cognome" type="text" th:field="*{cognome}" required/>
+    <!-- Campo ID solo se in modifica -->
+    <input type="hidden" th:if="${autore.id != null}" th:field="*{id}" />
 
-      <label for="dataNascita">Anno di nascita:</label>
-      <input id="dataNascita" type="number" th:field="*{dataNascita}" required/>
+    <label for="nome">Nome:</label>
+    <input id="nome" type="text" th:field="*{nome}" required />
 
-      <label for="dataMorte">Anno di morte:</label>
-      <input id="dataMorte" type="number" th:field="*{dataMorte}"/>
+    <label for="cognome">Cognome:</label>
+    <input id="cognome" type="text" th:field="*{cognome}" required />
 
-      <label for="nazionalita">Nazionalità:</label>
-      <input id="nazionalita" type="text" th:field="*{nazionalita}" required/>
+    <label for="dataNascita">Anno di nascita:</label>
+    <input id="dataNascita" type="number" th:field="*{dataNascita}" required />
 
-      <label for="fotoFile">Foto Autore:</label>
-      <input id="fotoFile" type="file" name="fotoFile" accept="image/*"/>
+    <label for="dataMorte">Anno di morte:</label>
+    <input id="dataMorte" type="number" th:field="*{dataMorte}" />
 
-      <button type="submit">Salva Autore</button>
-    </form>
-  </div>
+    <label for="nazionalita">Nazionalità:</label>
+    <input id="nazionalita" type="text" th:field="*{nazionalita}" required />
+
+    <!-- Foto (opzionale) -->
+    <label for="fotoFile">Foto Autore:</label>
+    <input id="fotoFile" type="file" name="fotoFile" accept="image/*" />
+
+    <!-- Mostra foto attuale se esiste -->
+    <div th:if="${autore.fotoUrl != null}">
+      <p>Foto attuale:</p>
+      <img th:src="${autore.fotoUrl}" alt="Foto attuale" style="max-height: 200px;"/>
+    </div>
+
+    <button type="submit" th:text="${autore.id != null ? 'Aggiorna Autore' : 'Salva Autore'}">Salva</button>
+  </form>
+</div>
 
 </body>
 </html>
