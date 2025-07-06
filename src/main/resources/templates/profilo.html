@@ -49,8 +49,10 @@
                     <div class="contenuto-recensione">
                         <div class="testo-recensione">
                             <p>
-                                <a th:href="@{/recensione/modifica/{id}(id=${recensione.id})}"
-                                   th:text="${recensione.titolo}">Titolo Recensione</a>
+                               <a th:href="'/libro/' + ${recensione.libro.id} + '#recensione-' + ${recensione.id}"
+                                    th:text="${recensione.titolo}">Titolo Recensione</a>
+
+
                             </p>
                         </div>
                         <button type="submit" class="btn-elimina" title="Elimina recensione"></button>
