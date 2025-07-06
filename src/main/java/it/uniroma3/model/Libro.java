@@ -40,7 +40,7 @@ public class Libro {
     private List<String> immagini;
 
 
-    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    @ManyToMany(cascade = { CascadeType.ALL })
     @JoinTable(
     name = "autore_libri", // <-- Nome esplicito della tabella di join
     joinColumns = @JoinColumn(name = "libro_id"),
@@ -147,6 +147,5 @@ public class Libro {
     public void setLettori(List<Utente> lettori) {
         this.lettori = lettori;
     }
-
 
 }

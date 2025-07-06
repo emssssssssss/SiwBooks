@@ -11,4 +11,6 @@ import it.uniroma3.model.Autore;
 public interface AutoreRepository extends JpaRepository<Autore, Long>{
     @Query("SELECT a FROM Autore a LEFT JOIN FETCH a.libri WHERE a.id = :id")
     Optional<Autore> findByIdWithLibri(@Param("id") Long id);
+
+
 }
