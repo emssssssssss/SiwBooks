@@ -2,14 +2,16 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="it" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8" />
-    <title>Aggiungi Nuovo Libro</title>
+    <title>Modifica Libro</title>
     <link rel="stylesheet" th:href="@{/css/formLibro.css}" />
 </head>
 <body>
 
-<h1>Aggiungi Nuovo Libro</h1>
+<h1>Modifica Libro</h1>
 
-<form th:action="@{/admin/libro/nuovo}" th:object="${libro}" method="post" enctype="multipart/form-data">
+<form th:action="@{/admin/libro/modifica/{id}(id=${libro.id})}" th:object="${libro}" method="post" enctype="multipart/form-data">
+
+    <input type="hidden" th:field="*{id}" />
 
     <div>
         <label for="titolo">Titolo:</label>
@@ -36,8 +38,13 @@
     </div>
 
     <div>
-        <label for="immaginiFiles">Copertina / Immagini libro:</label>
-        <input type="file" id="immaginiFiles" name="immaginiFiles" accept="image/*" multiple />
+        <label for="copertinaFile">Copertina libro:</label>
+        <input id="copertinaFile" type="file" name="copertinaFile" accept="image/*" />
+    </div>
+
+    <div th:if="${libro.urlCopertina != null}">
+        <p>Copertina attuale:</p>
+        <img th:src="${libro.urlCopertina}" alt="Copertina attuale" style="max-height: 200px;"/>
     </div>
 
     <div>
@@ -45,13 +52,14 @@
         <select id="autori" name="autori" multiple required>
             <option th:each="autore : ${autori}" 
                     th:value="${autore.id}" 
-                    th:text="${autore.nome} + ' ' + ${autore.cognome}">
+                    th:text="${autore.nome} + ' ' + ${autore.cognome}"
+                    th:selected="${libro.autori != null} ? ${libro.autori.contains(autore)} : false">
             </option>
         </select>
     </div>
 
     <div>
-        <button type="submit">Salva Libro</button>
+        <button type="submit">Aggiorna Libro</button>
     </div>
 </form>
 

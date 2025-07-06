@@ -22,7 +22,7 @@
     <div class="swiper swiper-fantasy">
       <div class="swiper-wrapper">
         <div class="swiper-slide" th:each="libro : ${fantasy}">
-          <a th:href="@{'/libri/' + ${libro.id}}" class="book-card">
+          <a th:href="@{/libro/{id}(id=${libro.id})}" class="book-card">
             <img th:src="${libro.urlCopertina}" alt="Copertina" class="cover-img" />
             <div class="book-title" th:text="${libro.titolo}"></div>
           </a>
@@ -38,7 +38,7 @@
     <div class="swiper swiper-thriller">
       <div class="swiper-wrapper">
         <div class="swiper-slide" th:each="libro : ${thriller}">
-          <a th:href="@{'/libri/' + ${libro.id}}" class="book-card">
+          <a th:href="@{/libro/{id}(id=${libro.id})}" class="book-card">
             <img th:src="${libro.urlCopertina}" alt="Copertina" class="cover-img" />
             <div class="book-title" th:text="${libro.titolo}"></div>
           </a>
@@ -54,7 +54,7 @@
     <div class="swiper swiper-romance">
       <div class="swiper-wrapper">
         <div class="swiper-slide" th:each="libro : ${romance}">
-          <a th:href="@{'/libri/' + ${libro.id}}" class="book-card">
+          <a th:href="@{/libro/{id}(id=${libro.id})}" class="book-card">
             <img th:src="${libro.urlCopertina}" alt="Copertina" class="cover-img" />
             <div class="book-title" th:text="${libro.titolo}"></div>
           </a>
@@ -70,7 +70,7 @@
     <div class="swiper swiper-horror">
       <div class="swiper-wrapper">
         <div class="swiper-slide" th:each="libro : ${horror}">
-          <a th:href="@{'/libri/' + ${libro.id}}" class="book-card">
+          <a th:href="@{/libro/{id}(id=${libro.id})}" class="book-card">
             <img th:src="${libro.urlCopertina}" alt="Copertina" class="cover-img" />
             <div class="book-title" th:text="${libro.titolo}"></div>
           </a>
