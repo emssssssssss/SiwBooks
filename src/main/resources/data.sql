@@ -6,6 +6,11 @@ VALUES (
   'ADMIN'
 );
 
+INSERT INTO utente (email, username, password, ruolo) VALUES
+  ('mario.rossi@email.com', 'mariorossi', '$2a$11$u1yq8Nq1mXLsm8b0OfNbyuJ9slVtOZvlXaHfRmVL7ZJPv8d8x1zqe', 'USER'),  -- password: mario123
+  ('laura.bianchi@email.com', 'laurabianchi', '$2a$11$XUd5k3tPLP6CGqHtFXQi1ONoPoFQzWrpQa08X5TAHlYS1GvZSWQ9O', 'USER'), -- password: laura123
+  ('giuseppe.verdi@email.com', 'giuseppeverdi', '$2a$11$FjQxpQo7x76mKDn9O4zB.uUxeULGoM.6OD2Wm6kx4oNqG7ht/NYge', 'USER'); -- password: giuseppe123
+
 
 
 -- 7 libri Fantasy (senza id)
@@ -146,6 +151,54 @@ INSERT INTO autore_libri (libro_id, autore_id) VALUES (27, 12);
 INSERT INTO autore_libri (libro_id, autore_id) VALUES (28, 12);
 
 
+INSERT INTO recensione (titolo, testo, voto, utente_id, libro_id) VALUES
+  ('Un classico intramontabile', 'Lo Hobbit è una lettura magica e avvincente, perfetta per ogni amante del fantasy.', 5, 1, 1),
+  ('Avventura indimenticabile', 'Bilbo è un personaggio adorabile e la storia è ben scritta.', 5, 2, 1),
+  ('Troppo lento', 'Ho trovato alcune parti troppo lente, ma nel complesso buono.', 3, 3, 1),
+
+  ('Intrighi senza fine', 'A Game of Thrones è davvero un capolavoro di costruzione del mondo.', 5, 1, 2),
+  ('Personaggi ben scritti', 'Adoro la complessità dei personaggi e la trama intricata.', 4, 2, 2),
+  ('Troppo violento per i miei gusti', 'La violenza e la crudezza sono eccessive.', 2, 3, 2),
+
+  ('Nostalgia pura', 'Le Cronache di Narnia mi hanno riportato all''infanzia.', 5, 1, 3),
+  ('Magia e avventura', 'Un mondo fantastico che ti cattura dall''inizio alla fine.', 5, 2, 3),
+  ('Semplice ma efficace', 'Storia adatta anche ai più piccoli.', 4, 3, 3),
+
+  ('Magia e mistero', 'Il Nome del Vento è scritto magnificamente con una narrazione coinvolgente.', 5, 1, 4),
+  ('Un po'' lento', 'In alcuni punti la narrazione rallenta troppo.', 3, 2, 4),
+  ('Personaggio indimenticabile', 'Kvothe è uno dei protagonisti fantasy migliori mai creati.', 5, 3, 4),
+
+  ('Epico e grandioso', 'Il Signore degli Anelli è un capolavoro senza tempo.', 5, 1, 5),
+  ('Un must-read', 'Ogni appassionato di fantasy dovrebbe leggerlo almeno una volta.', 5, 2, 5),
+  ('Troppo lungo', 'A volte la lettura si fa pesante.', 3, 3, 5),
+
+  ('Innovativo e fresco', 'Mistborn ha un sistema magico unico e interessante.', 5, 1, 6),
+  ('Buona storia', 'La trama è intrigante e ben sviluppata.', 4, 2, 6),
+  ('Personaggi poco profondi', 'Non mi sono affezionato ai personaggi.', 3, 3, 6),
+
+  ('Grande finale', 'La Ruota del Tempo chiude una saga epica con stile.', 5, 1, 7),
+  ('Molto dettagliato', 'Un universo vasto e dettagliato ma a volte troppo complicato.', 4, 2, 7),
+  ('Non facile da seguire', 'Serve molta pazienza per arrivare alla fine.', 3, 3, 7),
+
+  ('Mistero avvincente', 'Il Codice Da Vinci è un thriller che ti tiene incollato alle pagine.', 5, 1, 8),
+  ('Simboli e storia', 'Mi sono piaciuti i riferimenti storici e i simboli nascosti.', 4, 2, 8),
+  ('Un po'' prevedibile', 'Alcuni colpi di scena erano facili da indovinare.', 3, 3, 8),
+
+  ('Intrigo Vaticano', 'Angeli e Demoni è un mix perfetto di azione e mistero.', 5, 1, 9),
+  ('Personaggi interessanti', 'I personaggi sono ben sviluppati e intriganti.', 4, 2, 9),
+  ('Troppo complesso', 'A volte la trama diventa troppo intricata.', 3, 3, 9),
+
+  ('Thriller psicologico', 'Inferno è un viaggio affascinante attraverso Firenze.', 5, 1, 10),
+  ('Ottima ambientazione', 'La città è descritta in modo vivido e coinvolgente.', 4, 2, 10),
+  ('Poco originale', 'La trama non mi ha sorpreso molto.', 3, 3, 10),
+
+  ('Segreti svelati', 'Il Simbolo Perduto è un thriller che ti fa riflettere sui segreti della storia.', 5, 1, 11),
+  ('Intrigante', 'Mi sono piaciuti i riferimenti alla massoneria e alla storia americana.', 4, 2, 11),
+  ('Un po'' lento', 'Alcune parti erano troppo lente per i miei gusti.', 3, 3, 11),
+
+  ('Innovativo', 'Origine affronta temi moderni in modo interessante.', 5, 1, 12),
+  ('Buona lettura', 'La trama è avvincente e ben scritta.', 4, 2, 12),
+  ('Poco credibile', 'Alcuni aspetti della trama erano poco realistici.', 3, 3, 12);
 
 
 
